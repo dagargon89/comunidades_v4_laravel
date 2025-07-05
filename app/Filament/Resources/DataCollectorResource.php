@@ -17,7 +17,11 @@ class DataCollectorResource extends Resource
 {
     protected static ?string $model = DataCollector::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+
+    protected static ?string $navigationGroup = 'Configuración del Sistema';
+
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

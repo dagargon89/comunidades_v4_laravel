@@ -17,7 +17,11 @@ class PlannedMetricResource extends Resource
 {
     protected static ?string $model = PlannedMetric::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
+
+    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
+
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

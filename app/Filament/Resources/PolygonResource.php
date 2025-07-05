@@ -17,7 +17,11 @@ class PolygonResource extends Resource
 {
     protected static ?string $model = Polygon::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-map';
+
+    protected static ?string $navigationGroup = 'Gestión Geográfica';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

@@ -17,7 +17,11 @@ class KpiResource extends Resource
 {
     protected static ?string $model = Kpi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+
+    protected static ?string $navigationGroup = 'Gestión de Proyectos';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

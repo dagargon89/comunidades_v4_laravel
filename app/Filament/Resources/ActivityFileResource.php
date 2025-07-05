@@ -17,7 +17,11 @@ class ActivityFileResource extends Resource
 {
     protected static ?string $model = ActivityFile::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document';
+
+    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
