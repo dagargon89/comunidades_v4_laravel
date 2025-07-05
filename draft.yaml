@@ -1,0 +1,224 @@
+# Este archivo define los modelos para la aplicación de gestión de proyectos.
+# Fue generado a partir de un esquema MySQL, adaptando las tablas y relaciones
+# al formato de Laravel Blueprint.
+
+models:
+  # Modelo para los ejes estratégicos.
+  Axe:
+    name: string:500, nullable
+    timestamps
+    # Un eje puede tener muchos programas.
+    relationships:
+      hasMany: Program
+
+  # Modelo para las organizaciones.
+  Organization:
+    name: string:500, nullable
+    # Una organización puede estar asociada a muchas metas.
+    relationships:
+      hasMany: Goal
+
+  # Modelo para las entidades financieras.
+  Financier:
+    name: string:500, nullable
+    # Un financiero puede financiar muchos proyectos.
+    relationships:
+      hasMany: Project
+
+  # Modelo principal para los proyectos.
+  Project:
+    name: string:500
+    background: text, nullable
+    justification: text, nullable
+    general_objective: text, nullable
+    timestamps
+    # Un proyecto pertenece a un financiero.
+    relationships:
+      belongsTo: Financier
+      # Un proyecto tiene muchos objetivos específicos y KPIs.
+      hasMany: SpecificObjective, Kpi
+
+  # Modelo para los objetivos específicos de un proyecto.
+  SpecificObjective:
+    description: text, nullable
+    timestamps
+    # Un objetivo específico pertenece a un proyecto.
+    relationships:
+      belongsTo: Project
+      # Un objetivo específico tiene muchas actividades.
+      hasMany: Activity
+
+  # Modelo para los responsables de las actividades.
+  Responsible:
+    name: string:255, unique
+    timestamps
+    # Un responsable puede tener muchas actividades asignadas.
+    relationships:
+      hasMany: Activity
+
+  # Modelo para los programas.
+  Program:
+    name: string:500
+    # Un programa pertenece a un eje.
+    relationships:
+      belongsTo: Axe
+      # Un programa tiene muchas líneas de acción e indicadores.
+      hasMany: ActionLine, ProgramIndicator
+
+  # Modelo para las líneas de acción de un programa.
+  ActionLine:
+    name: string:500
+    # Una línea de acción pertenece a un programa.
+    relationships:
+      belongsTo: Program
+      # Una línea de acción tiene muchos componentes.
+      hasMany: Component
+
+  # Modelo para los componentes de una línea de acción.
+  Component:
+    name: string:45, nullable
+    # Un componente pertenece a una línea de acción.
+    relationships:
+      belongsTo: ActionLine
+      # Un componente tiene muchas metas.
+      hasMany: Goal
+
+  # Modelo para las metas.
+  Goal:
+    description: text, nullable
+    number: integer, nullable
+    timestamps
+    # Una meta pertenece a un componente y a una organización.
+    relationships:
+      belongsTo: Component, Organization
+      # Una meta puede tener muchas actividades.
+      hasMany: Activity
+
+  # Modelo central para las actividades.
+  Activity:
+    description: text, nullable
+    timestamps
+    # Una actividad pertenece a un objetivo específico, un responsable y una meta.
+    relationships:
+      belongsTo: SpecificObjective, Responsible, Goal
+      # Una actividad tiene un calendario, archivos, registros de beneficiarios y métricas.
+      hasMany: ActivityCalendar, ActivityFile, BeneficiaryRegistry, PlannedMetric
+
+  # Modelo para los polígonos geográficos.
+  Polygon:
+    name: string:100, unique
+    description: text, nullable
+    # El DDL solo especifica created_at, por lo que no usamos timestamps().
+    created_at: timestamp
+    # Un polígono puede contener muchas ubicaciones.
+    relationships:
+      hasMany: Location
+
+  # Modelo para las ubicaciones físicas.
+  Location:
+    name: string:150, unique
+    category: string:50, nullable
+    street: text, nullable
+    neighborhood: string:100, nullable
+    ext_number: integer, nullable
+    int_number: integer, nullable
+    google_place_id: string:500, nullable
+    # El DDL solo especifica created_at.
+    created_at: timestamp
+    # Una ubicación pertenece a un polígono.
+    relationships:
+      belongsTo: Polygon
+      # Una ubicación puede estar en muchos calendarios de actividad y registros de beneficiarios.
+      hasMany: ActivityCalendar, BeneficiaryRegistry
+
+  # Modelo para los recolectores de datos (encuestadores).
+  DataCollector:
+    name: string:100, unique
+    phone: string:20, nullable
+    active: boolean, default:true
+    # El DDL solo especifica created_at.
+    created_at: timestamp
+    relationships:
+      # Un recolector puede estar en muchos calendarios y registrar muchos beneficiarios.
+      hasMany: ActivityCalendar, BeneficiaryRegistry, PlannedMetric
+
+  # Modelo para el calendario de actividades.
+  ActivityCalendar:
+    start_date: date, nullable
+    end_date: date, nullable
+    start_hour: time, nullable
+    end_hour: time, nullable
+    address_backup: text, nullable
+    cancelled: boolean, default:false
+    change_reason: text, nullable
+    # Usamos timestamps() para created_at y updated_at (last_modified).
+    timestamps
+    # Un evento del calendario pertenece a una actividad, una ubicación y un recolector.
+    relationships:
+      belongsTo: Activity, Location, DataCollector
+
+  # Modelo para los archivos asociados a una actividad.
+  ActivityFile:
+    month: string:20, nullable
+    type: string:100, nullable
+    file_path: text, nullable
+    # El DDL usa upload_date, lo mapeamos a created_at.
+    created_at: timestamp
+    # Un archivo pertenece a una actividad.
+    relationships:
+      belongsTo: Activity
+
+  # Modelo para el registro de beneficiarios.
+  BeneficiaryRegistry:
+    last_name: string:100, nullable
+    mother_last_name: string:100, nullable
+    first_names: string:100, nullable
+    birth_year: string:4, nullable
+    gender: enum:['M','F','Male','Female'], nullable
+    phone: string:20, nullable
+    signature: text, nullable
+    address_backup: text, nullable
+    timestamps
+    # Un registro pertenece a una actividad, una ubicación y opcionalmente a un recolector.
+    relationships:
+      belongsTo: Activity, Location, DataCollector:nullable
+
+  # Modelo para las métricas planificadas de una actividad.
+  PlannedMetric:
+    description: text, nullable
+    unit: string:100, nullable
+    year: integer, nullable
+    month: integer, nullable
+    is_product: boolean, default:false
+    is_population: boolean, default:false
+    population_target_value: decimal:10,2, nullable
+    population_real_value: decimal:10,2, default:0.00
+    product_target_value: decimal:10,2, nullable
+    product_real_value: decimal:10,2, nullable
+    # La FK a data_collectors es un entero simple en el DDL.
+    data_collector_id: integer, foreign:data_collectors, nullable
+    timestamps
+    # Una métrica pertenece a una actividad y opcionalmente a un recolector.
+    relationships:
+      belongsTo: Activity, DataCollector:nullable
+
+  # Modelo para los Key Performance Indicators (KPIs) de un proyecto.
+  Kpi:
+    name: string:50, nullable
+    description: text, nullable
+    initial_value: decimal:10,2, nullable
+    final_value: decimal:10,2, nullable
+    # Un KPI pertenece a un proyecto.
+    relationships:
+      belongsTo: Project
+
+  # Modelo para los indicadores de un programa.
+  ProgramIndicator:
+    name: string:45, nullable
+    description: text, nullable
+    initial_value: decimal:10,2, nullable
+    final_value: decimal:10,2, nullable
+    # Un indicador pertenece a un programa.
+    relationships:
+      belongsTo: Program
+

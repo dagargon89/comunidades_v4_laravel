@@ -1,0 +1,83 @@
+created:
+    - database/factories/AxeFactory.php
+    - database/factories/OrganizationFactory.php
+    - database/factories/FinancierFactory.php
+    - database/factories/ProjectFactory.php
+    - database/factories/SpecificObjectiveFactory.php
+    - database/factories/ResponsibleFactory.php
+    - database/factories/ProgramFactory.php
+    - database/factories/ActionLineFactory.php
+    - database/factories/ComponentFactory.php
+    - database/factories/GoalFactory.php
+    - database/factories/ActivityFactory.php
+    - database/factories/PolygonFactory.php
+    - database/factories/LocationFactory.php
+    - database/factories/DataCollectorFactory.php
+    - database/factories/ActivityCalendarFactory.php
+    - database/factories/ActivityFileFactory.php
+    - database/factories/BeneficiaryRegistryFactory.php
+    - database/factories/PlannedMetricFactory.php
+    - database/factories/KpiFactory.php
+    - database/factories/ProgramIndicatorFactory.php
+    - database/migrations/2025_07_05_231552_create_axes_table.php
+    - database/migrations/2025_07_05_231553_create_organizations_table.php
+    - database/migrations/2025_07_05_231554_create_financiers_table.php
+    - database/migrations/2025_07_05_231555_create_projects_table.php
+    - database/migrations/2025_07_05_231556_create_specific_objectives_table.php
+    - database/migrations/2025_07_05_231557_create_responsibles_table.php
+    - database/migrations/2025_07_05_231558_create_programs_table.php
+    - database/migrations/2025_07_05_231559_create_action_lines_table.php
+    - database/migrations/2025_07_05_231600_create_components_table.php
+    - database/migrations/2025_07_05_231601_create_goals_table.php
+    - database/migrations/2025_07_05_231602_create_activities_table.php
+    - database/migrations/2025_07_05_231603_create_polygons_table.php
+    - database/migrations/2025_07_05_231604_create_locations_table.php
+    - database/migrations/2025_07_05_231605_create_data_collectors_table.php
+    - database/migrations/2025_07_05_231606_create_activity_calendars_table.php
+    - database/migrations/2025_07_05_231607_create_activity_files_table.php
+    - database/migrations/2025_07_05_231608_create_beneficiary_registries_table.php
+    - database/migrations/2025_07_05_231609_create_planned_metrics_table.php
+    - database/migrations/2025_07_05_231610_create_kpis_table.php
+    - database/migrations/2025_07_05_231611_create_program_indicators_table.php
+    - app/Models/Axe.php
+    - app/Models/Organization.php
+    - app/Models/Financier.php
+    - app/Models/Project.php
+    - app/Models/SpecificObjective.php
+    - app/Models/Responsible.php
+    - app/Models/Program.php
+    - app/Models/ActionLine.php
+    - app/Models/Component.php
+    - app/Models/Goal.php
+    - app/Models/Activity.php
+    - app/Models/Polygon.php
+    - app/Models/Location.php
+    - app/Models/DataCollector.php
+    - app/Models/ActivityCalendar.php
+    - app/Models/ActivityFile.php
+    - app/Models/BeneficiaryRegistry.php
+    - app/Models/PlannedMetric.php
+    - app/Models/Kpi.php
+    - app/Models/ProgramIndicator.php
+models:
+    User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string nullable' }
+    Axe: { name: 'string:500, nullable', timestamps: timestamps, relationships: { hasMany: Program } }
+    Organization: { name: 'string:500, nullable', relationships: { hasMany: Goal } }
+    Financier: { name: 'string:500, nullable', relationships: { hasMany: Project } }
+    Project: { name: 'string:500', background: 'text, nullable', justification: 'text, nullable', general_objective: 'text, nullable', timestamps: timestamps, relationships: { belongsTo: Financier, hasMany: 'SpecificObjective, Kpi' } }
+    SpecificObjective: { description: 'text, nullable', timestamps: timestamps, relationships: { belongsTo: Project, hasMany: Activity } }
+    Responsible: { name: 'string:255, unique', timestamps: timestamps, relationships: { hasMany: Activity } }
+    Program: { name: 'string:500', relationships: { belongsTo: Axe, hasMany: 'ActionLine, ProgramIndicator' } }
+    ActionLine: { name: 'string:500', relationships: { belongsTo: Program, hasMany: Component } }
+    Component: { name: 'string:45, nullable', relationships: { belongsTo: ActionLine, hasMany: Goal } }
+    Goal: { description: 'text, nullable', number: 'integer, nullable', timestamps: timestamps, relationships: { belongsTo: 'Component, Organization', hasMany: Activity } }
+    Activity: { description: 'text, nullable', timestamps: timestamps, relationships: { belongsTo: 'SpecificObjective, Responsible, Goal', hasMany: 'ActivityCalendar, ActivityFile, BeneficiaryRegistry, PlannedMetric' } }
+    Polygon: { name: 'string:100, unique', description: 'text, nullable', created_at: timestamp, relationships: { hasMany: Location } }
+    Location: { name: 'string:150, unique', category: 'string:50, nullable', street: 'text, nullable', neighborhood: 'string:100, nullable', ext_number: 'integer, nullable', int_number: 'integer, nullable', google_place_id: 'string:500, nullable', created_at: timestamp, relationships: { belongsTo: Polygon, hasMany: 'ActivityCalendar, BeneficiaryRegistry' } }
+    DataCollector: { name: 'string:100, unique', phone: 'string:20, nullable', active: 'boolean, default:true', created_at: timestamp, relationships: { hasMany: 'ActivityCalendar, BeneficiaryRegistry, PlannedMetric' } }
+    ActivityCalendar: { start_date: 'date, nullable', end_date: 'date, nullable', start_hour: 'time, nullable', end_hour: 'time, nullable', address_backup: 'text, nullable', cancelled: 'boolean, default:false', change_reason: 'text, nullable', timestamps: timestamps, relationships: { belongsTo: 'Activity, Location, DataCollector' } }
+    ActivityFile: { month: 'string:20, nullable', type: 'string:100, nullable', file_path: 'text, nullable', created_at: timestamp, relationships: { belongsTo: Activity } }
+    BeneficiaryRegistry: { last_name: 'string:100, nullable', mother_last_name: 'string:100, nullable', first_names: 'string:100, nullable', birth_year: 'string:4, nullable', gender: "enum:['M','F','Male','Female'], nullable", phone: 'string:20, nullable', signature: 'text, nullable', address_backup: 'text, nullable', timestamps: timestamps, relationships: { belongsTo: 'Activity, Location, DataCollector:nullable' } }
+    PlannedMetric: { description: 'text, nullable', unit: 'string:100, nullable', year: 'integer, nullable', month: 'integer, nullable', is_product: 'boolean, default:false', is_population: 'boolean, default:false', population_target_value: 'decimal:10,2, nullable', population_real_value: 'decimal:10,2, default:0.00', product_target_value: 'decimal:10,2, nullable', product_real_value: 'decimal:10,2, nullable', data_collector_id: 'integer, foreign:data_collectors, nullable', timestamps: timestamps, relationships: { belongsTo: 'Activity, DataCollector:nullable' } }
+    Kpi: { name: 'string:50, nullable', description: 'text, nullable', initial_value: 'decimal:10,2, nullable', final_value: 'decimal:10,2, nullable', relationships: { belongsTo: Project } }
+    ProgramIndicator: { name: 'string:45, nullable', description: 'text, nullable', initial_value: 'decimal:10,2, nullable', final_value: 'decimal:10,2, nullable', relationships: { belongsTo: Program } }
