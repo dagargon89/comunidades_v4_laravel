@@ -54,7 +54,7 @@ class BeneficiaryRegistry extends Model
         return $this->belongsTo(Location::class);
     }
 
-    public function $this->belongsTo(DataCollector::class)able(): BelongsTo
+    public function dataCollector(): BelongsTo
     {
         return $this->belongsTo(DataCollector::class);
     }

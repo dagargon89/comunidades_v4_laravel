@@ -55,13 +55,13 @@ class PlannedMetric extends Model
         return $this->belongsTo(Activity::class);
     }
 
-    public function $this->belongsTo(DataCollector::class)able(): BelongsTo
+    public function dataCollectorable(): BelongsTo
     {
         return $this->belongsTo(DataCollector::class);
     }
 
     public function dataCollector(): BelongsTo
     {
-        return $this->belongsTo(DataCollectors,::class);
+        return $this->belongsTo(DataCollector::class);
     }
 }
