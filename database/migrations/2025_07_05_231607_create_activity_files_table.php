@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('month', 20)->nullable();
             $table->string('type', 100)->nullable();
             $table->text('file_path')->nullable();
-            $table->timestamp('created_at');
             $table->foreignId('activity_id');
             $table->timestamps();
         });

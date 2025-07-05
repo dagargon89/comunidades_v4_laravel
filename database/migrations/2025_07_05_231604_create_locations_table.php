@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('ext_number')->nullable();
             $table->integer('int_number')->nullable();
             $table->string('google_place_id', 500)->nullable();
-            $table->timestamp('created_at');
             $table->foreignId('polygon_id');
             $table->timestamps();
         });
