@@ -19,6 +19,10 @@ class LocationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
 
+    protected static ?string $navigationLabel = 'Ubicaciones';
+    protected static ?string $pluralLabel = 'Ubicaciones';
+    protected static ?string $label = 'Ubicación';
+
     protected static ?string $navigationGroup = 'Gestión Geográfica';
 
     protected static ?int $navigationSort = 2;
@@ -28,17 +32,25 @@ class LocationResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
-                Forms\Components\TextInput::make('category'),
+                Forms\Components\TextInput::make('category')
+                    ->label('Categoría'),
                 Forms\Components\Textarea::make('street')
+                    ->label('Calle')
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('neighborhood'),
+                Forms\Components\TextInput::make('neighborhood')
+                    ->label('Colonia'),
                 Forms\Components\TextInput::make('ext_number')
+                    ->label('Número exterior')
                     ->numeric(),
                 Forms\Components\TextInput::make('int_number')
+                    ->label('Número interior')
                     ->numeric(),
-                Forms\Components\TextInput::make('google_place_id'),
+                Forms\Components\TextInput::make('google_place_id')
+                    ->label('ID de Google Place'),
                 Forms\Components\Select::make('polygon_id')
+                    ->label('Polígono')
                     ->relationship('polygon', 'name')
                     ->required(),
             ]);
@@ -49,27 +61,35 @@ class LocationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category')
+                    ->label('Categoría')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('neighborhood')
+                    ->label('Colonia')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('ext_number')
+                    ->label('Número exterior')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('int_number')
+                    ->label('Número interior')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('google_place_id')
+                    ->label('ID de Google Place')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('polygon.name')
-                    ->numeric()
+                    ->label('Polígono')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

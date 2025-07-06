@@ -19,6 +19,10 @@ class KpiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
+    protected static ?string $navigationLabel = 'Indicadores KPI';
+    protected static ?string $pluralLabel = 'Indicadores KPI';
+    protected static ?string $label = 'Indicador KPI';
+
     protected static ?string $navigationGroup = 'Gestión de Proyectos';
 
     protected static ?int $navigationSort = 3;
@@ -27,14 +31,19 @@ class KpiResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre'),
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('initial_value')
+                    ->label('Valor inicial')
                     ->numeric(),
                 Forms\Components\TextInput::make('final_value')
+                    ->label('Valor final')
                     ->numeric(),
                 Forms\Components\Select::make('project_id')
+                    ->label('Proyecto')
                     ->relationship('project', 'name')
                     ->required(),
             ]);
@@ -45,21 +54,26 @@ class KpiResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('initial_value')
+                    ->label('Valor inicial')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('final_value')
+                    ->label('Valor final')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('project.name')
-                    ->numeric()
+                    ->label('Proyecto')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

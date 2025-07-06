@@ -23,15 +23,23 @@ class ActivityFileResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    protected static ?string $navigationLabel = 'Archivos de actividades';
+    protected static ?string $pluralLabel = 'Archivos de actividades';
+    protected static ?string $label = 'Archivo de actividad';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('month'),
-                Forms\Components\TextInput::make('type'),
+                Forms\Components\TextInput::make('month')
+                    ->label('Mes'),
+                Forms\Components\TextInput::make('type')
+                    ->label('Tipo'),
                 Forms\Components\Textarea::make('file_path')
+                    ->label('Ruta del archivo')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('activity_id')
+                    ->label('Actividad')
                     ->relationship('activity', 'id')
                     ->required(),
             ]);
@@ -42,17 +50,21 @@ class ActivityFileResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('month')
+                    ->label('Mes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type')
+                    ->label('Tipo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('activity.id')
-                    ->numeric()
+                    ->label('Actividad')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

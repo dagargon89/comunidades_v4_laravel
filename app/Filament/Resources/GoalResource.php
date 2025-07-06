@@ -19,6 +19,9 @@ class GoalResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-check-circle';
 
+    protected static ?string $navigationLabel = 'Metas';
+    protected static ?string $pluralLabel = 'Metas';
+    protected static ?string $label = 'Meta';
     protected static ?string $navigationGroup = 'Estructura Organizacional';
 
     protected static ?int $navigationSort = 4;
@@ -28,13 +31,17 @@ class GoalResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('number')
+                    ->label('Número')
                     ->numeric(),
                 Forms\Components\Select::make('component_id')
+                    ->label('Componente')
                     ->relationship('component', 'name')
                     ->required(),
                 Forms\Components\Select::make('organization_id')
+                    ->label('Organización')
                     ->relationship('organization', 'name')
                     ->required(),
             ]);
@@ -45,19 +52,22 @@ class GoalResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('number')
+                    ->label('Número')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('component.name')
-                    ->numeric()
+                    ->label('Componente')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('organization.name')
-                    ->numeric()
+                    ->label('Organización')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

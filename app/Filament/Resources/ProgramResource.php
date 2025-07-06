@@ -23,13 +23,19 @@ class ProgramResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $navigationLabel = 'Programas';
+    protected static ?string $pluralLabel = 'Programas';
+    protected static ?string $label = 'Programa';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Forms\Components\Select::make('axe_id')
+                    ->label('Eje')
                     ->relationship('axe', 'name')
                     ->required(),
             ]);
@@ -40,15 +46,18 @@ class ProgramResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('axe.name')
-                    ->numeric()
+                    ->label('Eje')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -19,7 +19,9 @@ class PlannedMetricResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
 
-    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
+    protected static ?string $navigationLabel = 'Métricas planificadas';
+    protected static ?string $pluralLabel = 'Métricas planificadas';
+    protected static ?string $label = 'Métrica planificada';
 
     protected static ?int $navigationSort = 5;
 
@@ -28,29 +30,41 @@ class PlannedMetricResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('unit'),
+                Forms\Components\TextInput::make('unit')
+                    ->label('Unidad'),
                 Forms\Components\TextInput::make('year')
+                    ->label('Año')
                     ->numeric(),
                 Forms\Components\TextInput::make('month')
+                    ->label('Mes')
                     ->numeric(),
                 Forms\Components\Toggle::make('is_product')
+                    ->label('¿Es producto?')
                     ->required(),
                 Forms\Components\Toggle::make('is_population')
+                    ->label('¿Es población?')
                     ->required(),
                 Forms\Components\TextInput::make('population_target_value')
+                    ->label('Meta de población')
                     ->numeric(),
                 Forms\Components\TextInput::make('population_real_value')
+                    ->label('Valor real de población')
                     ->required()
                     ->numeric()
                     ->default(0),
                 Forms\Components\TextInput::make('product_target_value')
+                    ->label('Meta de producto')
                     ->numeric(),
                 Forms\Components\TextInput::make('product_real_value')
+                    ->label('Valor real de producto')
                     ->numeric(),
                 Forms\Components\Select::make('data_collector_id')
+                    ->label('Capturista')
                     ->relationship('dataCollector', 'name'),
                 Forms\Components\Select::make('activity_id')
+                    ->label('Actividad')
                     ->relationship('activity', 'id')
                     ->required(),
             ]);
@@ -61,40 +75,51 @@ class PlannedMetricResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('unit')
+                    ->label('Unidad')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('year')
+                    ->label('Año')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('month')
+                    ->label('Mes')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_product')
+                    ->label('¿Es producto?')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_population')
+                    ->label('¿Es población?')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('population_target_value')
+                    ->label('Meta de población')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('population_real_value')
+                    ->label('Valor real de población')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_target_value')
+                    ->label('Meta de producto')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_real_value')
+                    ->label('Valor real de producto')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('dataCollector.name')
-                    ->numeric()
+                    ->label('Capturista')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('activity.id')
-                    ->numeric()
+                    ->label('Actividad')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

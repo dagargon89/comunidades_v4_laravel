@@ -19,6 +19,10 @@ class ProjectResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
+    protected static ?string $navigationLabel = 'Proyectos';
+    protected static ?string $pluralLabel = 'Proyectos';
+    protected static ?string $label = 'Proyecto';
+
     protected static ?string $navigationGroup = 'Gestión de Proyectos';
 
     protected static ?int $navigationSort = 1;
@@ -28,14 +32,19 @@ class ProjectResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Forms\Components\Textarea::make('background')
+                    ->label('Antecedentes')
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('justification')
+                    ->label('Justificación')
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('general_objective')
+                    ->label('Objetivo general')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('financier_id')
+                    ->label('Financiador')
                     ->relationship('financier', 'name')
                     ->required(),
             ]);
@@ -46,15 +55,18 @@ class ProjectResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('financier.name')
-                    ->numeric()
+                    ->label('Financiador')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

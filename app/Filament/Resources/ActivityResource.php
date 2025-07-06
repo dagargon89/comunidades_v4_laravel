@@ -19,6 +19,10 @@ class ActivityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-play-circle';
 
+    protected static ?string $navigationLabel = 'Actividades';
+    protected static ?string $pluralLabel = 'Actividades';
+    protected static ?string $label = 'Actividad';
+
     protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
 
     protected static ?int $navigationSort = 1;
@@ -28,14 +32,18 @@ class ActivityResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('specific_objective_id')
+                    ->label('Objetivo específico')
                     ->relationship('specificObjective', 'id')
                     ->required(),
                 Forms\Components\Select::make('responsible_id')
+                    ->label('Responsable')
                     ->relationship('responsible', 'name')
                     ->required(),
                 Forms\Components\Select::make('goal_id')
+                    ->label('Meta')
                     ->relationship('goal', 'id')
                     ->required(),
             ]);
@@ -46,19 +54,21 @@ class ActivityResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('specificObjective.id')
-                    ->numeric()
+                    ->label('Objetivo específico')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('responsible.name')
-                    ->numeric()
+                    ->label('Responsable')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('goal.id')
-                    ->numeric()
+                    ->label('Meta')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

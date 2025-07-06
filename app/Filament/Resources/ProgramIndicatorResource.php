@@ -19,7 +19,9 @@ class ProgramIndicatorResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'Estructura Organizacional';
+    protected static ?string $navigationLabel = 'Indicadores de programa';
+    protected static ?string $pluralLabel = 'Indicadores de programa';
+    protected static ?string $label = 'Indicador de programa';
 
     protected static ?int $navigationSort = 5;
 
@@ -27,14 +29,19 @@ class ProgramIndicatorResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre'),
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('initial_value')
+                    ->label('Valor inicial')
                     ->numeric(),
                 Forms\Components\TextInput::make('final_value')
+                    ->label('Valor final')
                     ->numeric(),
                 Forms\Components\Select::make('program_id')
+                    ->label('Programa')
                     ->relationship('program', 'name')
                     ->required(),
             ]);
@@ -45,21 +52,26 @@ class ProgramIndicatorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('initial_value')
+                    ->label('Valor inicial')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('final_value')
+                    ->label('Valor final')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('program.name')
-                    ->numeric()
+                    ->label('Programa')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

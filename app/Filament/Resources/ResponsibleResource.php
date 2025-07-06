@@ -19,6 +19,10 @@ class ResponsibleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    protected static ?string $navigationLabel = 'Responsables';
+    protected static ?string $pluralLabel = 'Responsables';
+    protected static ?string $label = 'Responsable';
+
     protected static ?string $navigationGroup = 'Configuración del Sistema';
 
     protected static ?int $navigationSort = 4;
@@ -28,6 +32,7 @@ class ResponsibleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
             ]);
     }
@@ -37,12 +42,15 @@ class ResponsibleResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

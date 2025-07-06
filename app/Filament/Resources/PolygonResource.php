@@ -19,6 +19,10 @@ class PolygonResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
 
+    protected static ?string $navigationLabel = 'Polígonos';
+    protected static ?string $pluralLabel = 'Polígonos';
+    protected static ?string $label = 'Polígono';
+
     protected static ?string $navigationGroup = 'Gestión Geográfica';
 
     protected static ?int $navigationSort = 1;
@@ -28,8 +32,10 @@ class PolygonResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->columnSpanFull(),
             ]);
     }
@@ -39,12 +45,15 @@ class PolygonResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

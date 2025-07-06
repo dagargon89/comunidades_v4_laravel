@@ -19,7 +19,9 @@ class ActivityCalendarResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
-    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
+    protected static ?string $navigationLabel = 'Calendarios de actividades';
+    protected static ?string $pluralLabel = 'Calendarios de actividades';
+    protected static ?string $label = 'Calendario de actividades';
 
     protected static ?int $navigationSort = 2;
 
@@ -27,23 +29,33 @@ class ActivityCalendarResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\DatePicker::make('start_date'),
-                Forms\Components\DatePicker::make('end_date'),
-                Forms\Components\TextInput::make('start_hour'),
-                Forms\Components\TextInput::make('end_hour'),
+                Forms\Components\DatePicker::make('start_date')
+                    ->label('Fecha de inicio'),
+                Forms\Components\DatePicker::make('end_date')
+                    ->label('Fecha de fin'),
+                Forms\Components\TextInput::make('start_hour')
+                    ->label('Hora de inicio'),
+                Forms\Components\TextInput::make('end_hour')
+                    ->label('Hora de fin'),
                 Forms\Components\Textarea::make('address_backup')
+                    ->label('Respaldo de dirección')
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('cancelled')
+                    ->label('Cancelado')
                     ->required(),
                 Forms\Components\Textarea::make('change_reason')
+                    ->label('Motivo de cambio')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('activity_id')
+                    ->label('Actividad')
                     ->relationship('activity', 'id')
                     ->required(),
                 Forms\Components\Select::make('location_id')
+                    ->label('Ubicación')
                     ->relationship('location', 'name')
                     ->required(),
                 Forms\Components\Select::make('data_collector_id')
+                    ->label('Capturista')
                     ->relationship('dataCollector', 'name')
                     ->required(),
             ]);
@@ -54,29 +66,36 @@ class ActivityCalendarResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('start_date')
+                    ->label('Fecha de inicio')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
+                    ->label('Fecha de fin')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('start_hour'),
-                Tables\Columns\TextColumn::make('end_hour'),
+                Tables\Columns\TextColumn::make('start_hour')
+                    ->label('Hora de inicio'),
+                Tables\Columns\TextColumn::make('end_hour')
+                    ->label('Hora de fin'),
                 Tables\Columns\IconColumn::make('cancelled')
+                    ->label('Cancelado')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('activity.id')
-                    ->numeric()
+                    ->label('Actividad')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('location.name')
-                    ->numeric()
+                    ->label('Ubicación')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('dataCollector.name')
-                    ->numeric()
+                    ->label('Capturista')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

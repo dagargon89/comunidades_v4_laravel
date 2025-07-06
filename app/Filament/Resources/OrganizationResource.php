@@ -19,7 +19,9 @@ class OrganizationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
 
-    protected static ?string $navigationGroup = 'Configuración del Sistema';
+    protected static ?string $navigationLabel = 'Organizaciones';
+    protected static ?string $pluralLabel = 'Organizaciones';
+    protected static ?string $label = 'Organización';
 
     protected static ?int $navigationSort = 2;
 
@@ -27,7 +29,8 @@ class OrganizationResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre'),
             ]);
     }
 
@@ -36,12 +39,15 @@ class OrganizationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

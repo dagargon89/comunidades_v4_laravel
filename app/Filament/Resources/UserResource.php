@@ -18,23 +18,33 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Usuarios';
+    protected static ?string $pluralLabel = 'Usuarios';
+    protected static ?string $label = 'Usuario';
+    protected static ?string $navigationGroup = 'Configuración del Sistema';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Forms\Components\TextInput::make('email')
+                    ->label('Correo electrónico')
                     ->email()
                     ->required(),
                 Forms\Components\Select::make('roles')
+                    ->label('Roles')
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload()
-                    ->searchable(),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                    ->searchable()
+                    ->placeholder('Seleccione una opción'),
+                Forms\Components\DateTimePicker::make('email_verified_at')
+                    ->label('Correo verificado en'),
                 Forms\Components\TextInput::make('password')
+                    ->label('Contraseña')
                     ->password()
                     ->required(),
             ]);
@@ -45,10 +55,13 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('Correo electrónico')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
+                    ->label('Correo verificado en')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('roles')
@@ -57,10 +70,12 @@ class UserResource extends Resource
                     ->color('info')
                     ->formatStateUsing(fn ($state) => $state->pluck('name')->implode(', ')),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

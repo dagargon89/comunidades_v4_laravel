@@ -19,6 +19,10 @@ class SpecificObjectiveResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
 
+    protected static ?string $navigationLabel = 'Objetivos específicos';
+    protected static ?string $pluralLabel = 'Objetivos específicos';
+    protected static ?string $label = 'Objetivo específico';
+
     protected static ?string $navigationGroup = 'Gestión de Proyectos';
 
     protected static ?int $navigationSort = 2;
@@ -28,8 +32,10 @@ class SpecificObjectiveResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('project_id')
+                    ->label('Proyecto')
                     ->relationship('project', 'name')
                     ->required(),
             ]);
@@ -40,13 +46,15 @@ class SpecificObjectiveResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('project.name')
-                    ->numeric()
+                    ->label('Proyecto')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

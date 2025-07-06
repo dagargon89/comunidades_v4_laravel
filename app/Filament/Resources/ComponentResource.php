@@ -19,7 +19,9 @@ class ComponentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
 
-    protected static ?string $navigationGroup = 'Estructura Organizacional';
+    protected static ?string $navigationLabel = 'Componentes';
+    protected static ?string $pluralLabel = 'Componentes';
+    protected static ?string $label = 'Componente';
 
     protected static ?int $navigationSort = 3;
 
@@ -27,8 +29,10 @@ class ComponentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre'),
                 Forms\Components\Select::make('action_line_id')
+                    ->label('Línea de acción')
                     ->relationship('actionLine', 'name')
                     ->required(),
             ]);
@@ -39,15 +43,18 @@ class ComponentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('actionLine.name')
-                    ->numeric()
+                    ->label('Línea de acción')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

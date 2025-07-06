@@ -19,7 +19,9 @@ class ActionLineResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
 
-    protected static ?string $navigationGroup = 'Estructura Organizacional';
+    protected static ?string $navigationLabel = 'Líneas de acción';
+    protected static ?string $pluralLabel = 'Líneas de acción';
+    protected static ?string $label = 'Línea de acción';
 
     protected static ?int $navigationSort = 2;
 
@@ -28,8 +30,10 @@ class ActionLineResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Forms\Components\Select::make('program_id')
+                    ->label('Programa')
                     ->relationship('program', 'name')
                     ->required(),
             ]);
@@ -40,15 +44,18 @@ class ActionLineResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('program.name')
-                    ->numeric()
+                    ->label('Programa')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

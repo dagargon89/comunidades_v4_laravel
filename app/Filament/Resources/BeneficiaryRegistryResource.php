@@ -19,7 +19,9 @@ class BeneficiaryRegistryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
+    protected static ?string $navigationLabel = 'Registros de beneficiarios';
+    protected static ?string $pluralLabel = 'Registros de beneficiarios';
+    protected static ?string $label = 'Registro de beneficiario';
 
     protected static ?int $navigationSort = 4;
 
@@ -27,24 +29,35 @@ class BeneficiaryRegistryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('last_name'),
-                Forms\Components\TextInput::make('mother_last_name'),
-                Forms\Components\TextInput::make('first_names'),
-                Forms\Components\TextInput::make('birth_year'),
-                Forms\Components\TextInput::make('gender'),
+                Forms\Components\TextInput::make('last_name')
+                    ->label('Apellido paterno'),
+                Forms\Components\TextInput::make('mother_last_name')
+                    ->label('Apellido materno'),
+                Forms\Components\TextInput::make('first_names')
+                    ->label('Nombres'),
+                Forms\Components\TextInput::make('birth_year')
+                    ->label('Año de nacimiento'),
+                Forms\Components\TextInput::make('gender')
+                    ->label('Género'),
                 Forms\Components\TextInput::make('phone')
+                    ->label('Teléfono')
                     ->tel(),
                 Forms\Components\Textarea::make('signature')
+                    ->label('Firma')
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('address_backup')
+                    ->label('Respaldo de dirección')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('activity_id')
+                    ->label('Actividad')
                     ->relationship('activity', 'id')
                     ->required(),
                 Forms\Components\Select::make('location_id')
+                    ->label('Ubicación')
                     ->relationship('location', 'name')
                     ->required(),
                 Forms\Components\Select::make('data_collector_id')
+                    ->label('Capturista')
                     ->relationship('dataCollector', 'name'),
             ]);
     }
@@ -54,31 +67,39 @@ class BeneficiaryRegistryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('last_name')
+                    ->label('Apellido paterno')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('mother_last_name')
+                    ->label('Apellido materno')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('first_names')
+                    ->label('Nombres')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('birth_year')
+                    ->label('Año de nacimiento')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gender')
+                    ->label('Género')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Teléfono')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('activity.id')
-                    ->numeric()
+                    ->label('Actividad')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('location.name')
-                    ->numeric()
+                    ->label('Ubicación')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('dataCollector.name')
-                    ->numeric()
+                    ->label('Capturista')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

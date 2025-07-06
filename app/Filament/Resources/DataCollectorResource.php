@@ -19,6 +19,9 @@ class DataCollectorResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
+    protected static ?string $navigationLabel = 'Capturistas';
+    protected static ?string $pluralLabel = 'Capturistas';
+    protected static ?string $label = 'Capturista';
     protected static ?string $navigationGroup = 'Configuración del Sistema';
 
     protected static ?int $navigationSort = 5;
@@ -28,10 +31,13 @@ class DataCollectorResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required(),
                 Forms\Components\TextInput::make('phone')
+                    ->label('Teléfono')
                     ->tel(),
                 Forms\Components\Toggle::make('active')
+                    ->label('Activo')
                     ->required(),
             ]);
     }
@@ -41,16 +47,21 @@ class DataCollectorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Teléfono')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('active')
+                    ->label('Activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

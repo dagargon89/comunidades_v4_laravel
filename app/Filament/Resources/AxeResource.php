@@ -19,6 +19,10 @@ class AxeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
+    protected static ?string $navigationLabel = 'Ejes';
+    protected static ?string $pluralLabel = 'Ejes';
+    protected static ?string $label = 'Eje';
+
     protected static ?string $navigationGroup = 'Configuración del Sistema';
 
     protected static ?int $navigationSort = 1;
@@ -27,7 +31,8 @@ class AxeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre'),
             ]);
     }
 
@@ -36,12 +41,15 @@ class AxeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
