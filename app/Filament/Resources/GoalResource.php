@@ -24,7 +24,7 @@ class GoalResource extends Resource
     protected static ?string $label = 'Meta';
     protected static ?string $navigationGroup = 'Estructura Organizacional';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

@@ -23,7 +23,8 @@ class ComponentResource extends Resource
     protected static ?string $pluralLabel = 'Componentes';
     protected static ?string $label = 'Componente';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Estructura Organizacional';
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

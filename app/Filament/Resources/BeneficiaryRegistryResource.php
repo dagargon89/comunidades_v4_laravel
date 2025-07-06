@@ -23,7 +23,8 @@ class BeneficiaryRegistryResource extends Resource
     protected static ?string $pluralLabel = 'Registros de beneficiarios';
     protected static ?string $label = 'Registro de beneficiario';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {

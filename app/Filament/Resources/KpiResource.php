@@ -25,7 +25,7 @@ class KpiResource extends Resource
 
     protected static ?string $navigationGroup = 'Gestión de Proyectos';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

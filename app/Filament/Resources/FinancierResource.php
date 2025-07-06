@@ -23,9 +23,9 @@ class FinancierResource extends Resource
     protected static ?string $pluralLabel = 'Financiadores';
     protected static ?string $label = 'Financiador';
 
-    protected static ?string $navigationGroup = 'Configuración del Sistema';
+    protected static ?string $navigationGroup = 'Estructura Organizacional';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 8;
 
     public static function form(Form $form): Form
     {

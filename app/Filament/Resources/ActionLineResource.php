@@ -23,6 +23,7 @@ class ActionLineResource extends Resource
     protected static ?string $pluralLabel = 'Líneas de acción';
     protected static ?string $label = 'Línea de acción';
 
+    protected static ?string $navigationGroup = 'Estructura Organizacional';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

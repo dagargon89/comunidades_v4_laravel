@@ -23,7 +23,8 @@ class ProgramIndicatorResource extends Resource
     protected static ?string $pluralLabel = 'Indicadores de programa';
     protected static ?string $label = 'Indicador de programa';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Estructura Organizacional';
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {

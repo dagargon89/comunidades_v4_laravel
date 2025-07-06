@@ -23,9 +23,9 @@ class AxeResource extends Resource
     protected static ?string $pluralLabel = 'Ejes';
     protected static ?string $label = 'Eje';
 
-    protected static ?string $navigationGroup = 'Configuración del Sistema';
+    protected static ?string $navigationGroup = 'Estructura Organizacional';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

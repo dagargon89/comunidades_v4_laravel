@@ -23,7 +23,7 @@ class ProjectResource extends Resource
     protected static ?string $pluralLabel = 'Proyectos';
     protected static ?string $label = 'Proyecto';
 
-    protected static ?string $navigationGroup = 'Gestión de Proyectos';
+    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
 
     protected static ?int $navigationSort = 1;
 

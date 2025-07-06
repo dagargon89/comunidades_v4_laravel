@@ -24,7 +24,7 @@ class DataCollectorResource extends Resource
     protected static ?string $label = 'Capturista';
     protected static ?string $navigationGroup = 'Configuración del Sistema';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

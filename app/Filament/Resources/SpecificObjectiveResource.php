@@ -23,7 +23,7 @@ class SpecificObjectiveResource extends Resource
     protected static ?string $pluralLabel = 'Objetivos específicos';
     protected static ?string $label = 'Objetivo específico';
 
-    protected static ?string $navigationGroup = 'Gestión de Proyectos';
+    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
 
     protected static ?int $navigationSort = 2;
 

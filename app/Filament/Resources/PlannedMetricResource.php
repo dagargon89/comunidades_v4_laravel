@@ -23,7 +23,8 @@ class PlannedMetricResource extends Resource
     protected static ?string $pluralLabel = 'Métricas planificadas';
     protected static ?string $label = 'Métrica planificada';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
+    protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
     {
