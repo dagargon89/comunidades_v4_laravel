@@ -8,6 +8,8 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Models\BeneficiaryRegistry;
 use App\Models\Activity;
+use App\Models\Location;
+use App\Models\DataCollector;
 use Filament\Tables\Actions;
 use Filament\Notifications\Notification;
 use Filament\Forms;
@@ -26,7 +28,8 @@ class BeneficiaryRegistryView extends Page implements HasTable
 
     public function mount(): void
     {
-        $this->activity_id = null;
+        // Selecciona la primera actividad como valor por defecto si existe
+        $this->activity_id = Activity::query()->min('id') ?? null;
     }
 
     public function form(Form $form): Form
@@ -34,10 +37,11 @@ class BeneficiaryRegistryView extends Page implements HasTable
         return $form->schema([
             Select::make('activity_id')
                 ->label('Actividad')
-                ->options(Activity::pluck('description', 'id'))
+                ->options(Activity::pluck('description', 'id')->toArray())
                 ->searchable()
                 ->required()
-                ->live(),
+                ->live()
+                ->default(Activity::query()->min('id')),
         ]);
     }
 
@@ -49,7 +53,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
 
     protected function getTableQuery()
     {
-        if (!$this->activity_id) {
+        if (!$this->activity_id || $this->activity_id <= 0) {
             return BeneficiaryRegistry::query()->whereRaw('1=0');
         }
         return BeneficiaryRegistry::query()
@@ -58,7 +62,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
 
     protected function shouldRenderTable(): bool
     {
-        return filled($this->activity_id);
+        return $this->activity_id && $this->activity_id > 0;
     }
 
     protected function getTableColumns(): array
@@ -68,15 +72,21 @@ class BeneficiaryRegistryView extends Page implements HasTable
             Tables\Columns\TextColumn::make('mother_last_name')->label('Apellido Materno'),
             Tables\Columns\TextColumn::make('first_names')->label('Nombres'),
             Tables\Columns\TextColumn::make('birth_year')->label('Año Nacimiento'),
-            Tables\Columns\TextColumn::make('gender')->label('Género'),
+            Tables\Columns\TextColumn::make('gender')->label('Género')
+                ->formatStateUsing(fn ($state) => match ($state) {
+                    'Male' => 'Masculino',
+                    'Female' => 'Femenino',
+                    default => $state,
+                }),
             Tables\Columns\TextColumn::make('phone')->label('Teléfono'),
+            Tables\Columns\TextColumn::make('activity.description')->label('Actividad')->limit(50),
             Tables\Columns\TextColumn::make('created_at')->label('Registrado el')->dateTime('d/m/Y H:i'),
         ];
     }
 
     protected function getTableHeaderActions(): array
     {
-        if (!filled($this->activity_id)) {
+        if (!$this->activity_id || $this->activity_id <= 0) {
             return [];
         }
         return [
@@ -89,11 +99,26 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     TextInput::make('first_names')->label('Nombres')->required(),
                     TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
                     Select::make('gender')->label('Género')->options([
-                        'Masculino' => 'Masculino',
-                        'Femenino' => 'Femenino',
-                        'Otro' => 'Otro',
+                        'Male' => 'Masculino',
+                        'Female' => 'Femenino',
                     ])->required(),
                     TextInput::make('phone')->label('Teléfono')->tel(),
+                    TextInput::make('signature')->label('Firma'),
+                    Forms\Components\Textarea::make('address_backup')
+                        ->label('Dirección de respaldo')
+                        ->rows(3),
+                    Select::make('location_id')->label('Ubicación')
+                        ->options(Location::pluck('name', 'id')->toArray())
+                        ->required()
+                        ->native(false)
+                        ->searchable()
+                        ->preload(),
+                    Select::make('data_collector_id')->label('Recolector de datos')
+                        ->options(DataCollector::pluck('name', 'id')->toArray())
+                        ->required()
+                        ->native(false)
+                        ->searchable()
+                        ->preload(),
                 ])
                 ->action(function (array $data): void {
                     BeneficiaryRegistry::create(array_merge($data, [
@@ -116,11 +141,26 @@ class BeneficiaryRegistryView extends Page implements HasTable
                             TextInput::make('first_names')->label('Nombres')->required(),
                             TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
                             Select::make('gender')->label('Género')->options([
-                                'Masculino' => 'Masculino',
-                                'Femenino' => 'Femenino',
-                                'Otro' => 'Otro',
+                                'Male' => 'Masculino',
+                                'Female' => 'Femenino',
                             ])->required(),
                             TextInput::make('phone')->label('Teléfono')->tel(),
+                            TextInput::make('signature')->label('Firma'),
+                    Forms\Components\Textarea::make('address_backup')
+                        ->label('Dirección de respaldo')
+                        ->rows(3),
+                    Select::make('location_id')->label('Ubicación')
+                        ->options(Location::pluck('name', 'id')->toArray())
+                        ->required()
+                        ->native(false)
+                        ->searchable()
+                        ->preload(),
+                    Select::make('data_collector_id')->label('Recolector de datos')
+                        ->options(DataCollector::pluck('name', 'id')->toArray())
+                        ->required()
+                        ->native(false)
+                        ->searchable()
+                        ->preload(),
                         ])
                         ->minItems(1)
                         ->addActionLabel('Agregar otro beneficiario'),
