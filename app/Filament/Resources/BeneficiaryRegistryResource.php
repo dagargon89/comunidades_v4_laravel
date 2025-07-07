@@ -38,8 +38,12 @@ class BeneficiaryRegistryResource extends Resource
                     ->label('Nombres'),
                 Forms\Components\TextInput::make('birth_year')
                     ->label('Año de nacimiento'),
-                Forms\Components\TextInput::make('gender')
-                    ->label('Género'),
+                Forms\Components\Select::make('gender')
+                    ->label('Género')
+                    ->options([
+                        'male' => 'Masculino',
+                        'female' => 'Femenino',
+                    ]),
                 Forms\Components\TextInput::make('phone')
                     ->label('Teléfono')
                     ->tel(),
@@ -94,8 +98,9 @@ class BeneficiaryRegistryResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Teléfono')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('activity.id')
+                Tables\Columns\TextColumn::make('activity.description')
                     ->label('Actividad')
+                    ->limit(50)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('location.name')
                     ->label('Ubicación')
