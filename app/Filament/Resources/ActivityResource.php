@@ -36,16 +36,25 @@ class ActivityResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Select::make('specific_objective_id')
                     ->label('Objetivo específico')
-                    ->relationship('specificObjective', 'id')
-                    ->required(),
+                    ->relationship('specificObjective', 'description')
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('responsible_id')
                     ->label('Responsable')
                     ->relationship('responsible', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('goal_id')
                     ->label('Meta')
-                    ->relationship('goal', 'id')
-                    ->required(),
+                    ->relationship('goal', 'description')
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 
@@ -53,13 +62,17 @@ class ActivityResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('specificObjective.id')
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción')
+                    ->limit(50)
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('specificObjective.description')
                     ->label('Objetivo específico')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('responsible.name')
                     ->label('Responsable')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('goal.id')
+                Tables\Columns\TextColumn::make('goal.description')
                     ->label('Meta')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

@@ -35,7 +35,10 @@ class ComponentResource extends Resource
                 Forms\Components\Select::make('action_line_id')
                     ->label('Línea de acción')
                     ->relationship('actionLine', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

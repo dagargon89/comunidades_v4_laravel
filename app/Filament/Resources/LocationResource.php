@@ -52,7 +52,10 @@ class LocationResource extends Resource
                 Forms\Components\Select::make('polygon_id')
                     ->label('Polígono')
                     ->relationship('polygon', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

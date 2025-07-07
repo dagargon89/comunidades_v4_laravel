@@ -39,11 +39,17 @@ class GoalResource extends Resource
                 Forms\Components\Select::make('component_id')
                     ->label('Componente')
                     ->relationship('component', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('organization_id')
                     ->label('Organización')
                     ->relationship('organization', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 
@@ -51,6 +57,10 @@ class GoalResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción')
+                    ->limit(50)
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('number')
                     ->label('Número')
                     ->numeric()

@@ -46,7 +46,10 @@ class ProjectResource extends Resource
                 Forms\Components\Select::make('financier_id')
                     ->label('Financiador')
                     ->relationship('financier', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 
@@ -56,6 +59,18 @@ class ProjectResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('background')
+                    ->label('Antecedentes')
+                    ->limit(50)
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('justification')
+                    ->label('Justificación')
+                    ->limit(50)
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('general_objective')
+                    ->label('Objetivo general')
+                    ->limit(50)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('financier.name')
                     ->label('Financiador')

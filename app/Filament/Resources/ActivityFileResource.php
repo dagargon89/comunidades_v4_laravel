@@ -40,8 +40,11 @@ class ActivityFileResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Select::make('activity_id')
                     ->label('Actividad')
-                    ->relationship('activity', 'id')
-                    ->required(),
+                    ->relationship('activity', 'description')
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

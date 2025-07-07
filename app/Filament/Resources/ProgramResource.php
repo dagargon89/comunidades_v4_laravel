@@ -37,7 +37,10 @@ class ProgramResource extends Resource
                 Forms\Components\Select::make('axe_id')
                     ->label('Eje')
                     ->relationship('axe', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

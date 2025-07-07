@@ -51,15 +51,24 @@ class BeneficiaryRegistryResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Select::make('activity_id')
                     ->label('Actividad')
-                    ->relationship('activity', 'id')
-                    ->required(),
+                    ->relationship('activity', 'description')
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('location_id')
                     ->label('Ubicación')
                     ->relationship('location', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('data_collector_id')
                     ->label('Capturista')
-                    ->relationship('dataCollector', 'name'),
+                    ->relationship('dataCollector', 'name')
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

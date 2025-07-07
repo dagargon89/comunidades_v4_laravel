@@ -36,7 +36,10 @@ class ActionLineResource extends Resource
                 Forms\Components\Select::make('program_id')
                     ->label('Programa')
                     ->relationship('program', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

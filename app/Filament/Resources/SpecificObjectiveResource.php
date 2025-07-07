@@ -37,7 +37,10 @@ class SpecificObjectiveResource extends Resource
                 Forms\Components\Select::make('project_id')
                     ->label('Proyecto')
                     ->relationship('project', 'name')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 
@@ -45,6 +48,10 @@ class SpecificObjectiveResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción')
+                    ->limit(50)
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('project.name')
                     ->label('Proyecto')
                     ->sortable(),
