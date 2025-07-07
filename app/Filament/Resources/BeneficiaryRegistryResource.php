@@ -30,6 +30,7 @@ class BeneficiaryRegistryResource extends Resource
     {
         return $form
             ->schema([
+
                 Forms\Components\TextInput::make('last_name')
                     ->label('Apellido paterno'),
                 Forms\Components\TextInput::make('mother_last_name')
@@ -53,6 +54,10 @@ class BeneficiaryRegistryResource extends Resource
                 Forms\Components\Textarea::make('address_backup')
                     ->label('Respaldo de dirección')
                     ->columnSpanFull(),
+                    Forms\Components\TextInput::make('identifier')
+                    ->label('Identificador')
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255),
                 Forms\Components\Select::make('activity_id')
                     ->label('Actividad')
                     ->relationship('activity', 'description')
@@ -60,6 +65,8 @@ class BeneficiaryRegistryResource extends Resource
                     ->native(false)
                     ->searchable()
                     ->preload(),
+                Forms\Components\DatePicker::make('activity_date')
+                    ->label('Fecha de la actividad'),
                 Forms\Components\Select::make('location_id')
                     ->label('Ubicación')
                     ->relationship('location', 'name')
@@ -98,10 +105,16 @@ class BeneficiaryRegistryResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Teléfono')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('identifier')
+                    ->label('Identificador')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('activity.description')
                     ->label('Actividad')
                     ->limit(50)
                     ->sortable(),
+                Tables\Columns\TextColumn::make('activity_date')
+                    ->label('Fecha de la actividad')
+                    ->date(),
                 Tables\Columns\TextColumn::make('location.name')
                     ->label('Ubicación')
                     ->sortable(),
