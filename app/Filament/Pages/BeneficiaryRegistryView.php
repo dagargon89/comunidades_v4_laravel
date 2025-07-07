@@ -26,7 +26,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
 
     public function mount(): void
     {
-        $this->activity_id = Activity::query()->value('id'); // Selecciona la primera actividad por defecto
+        $this->activity_id = null;
     }
 
     public function form(Form $form): Form
@@ -41,10 +41,24 @@ class BeneficiaryRegistryView extends Page implements HasTable
         ]);
     }
 
+    public function updatedActivityId($value): void
+    {
+        $this->activity_id = $value ? (int) $value : null;
+        $this->resetTable();
+    }
+
     protected function getTableQuery()
     {
+        if (!$this->activity_id) {
+            return BeneficiaryRegistry::query()->whereRaw('1=0');
+        }
         return BeneficiaryRegistry::query()
             ->when($this->activity_id, fn ($q) => $q->where('activity_id', $this->activity_id));
+    }
+
+    protected function shouldRenderTable(): bool
+    {
+        return filled($this->activity_id);
     }
 
     protected function getTableColumns(): array
@@ -62,6 +76,9 @@ class BeneficiaryRegistryView extends Page implements HasTable
 
     protected function getTableHeaderActions(): array
     {
+        if (!filled($this->activity_id)) {
+            return [];
+        }
         return [
             Actions\Action::make('addSingle')
                 ->label('Registrar beneficiario único')
