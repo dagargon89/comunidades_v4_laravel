@@ -35,13 +35,6 @@ class UserResource extends Resource
                     ->label('Correo electrónico')
                     ->email()
                     ->required(),
-                Forms\Components\Select::make('roles')
-                    ->label('Roles')
-                    ->relationship('roles', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->placeholder('Seleccione una opción'),
                 Forms\Components\DateTimePicker::make('email_verified_at')
                     ->label('Correo verificado en'),
                 Forms\Components\TextInput::make('password')
@@ -65,11 +58,6 @@ class UserResource extends Resource
                     ->label('Correo verificado en')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('roles')
-                    ->label('Roles')
-                    ->badge()
-                    ->color('info')
-                    ->formatStateUsing(fn ($state) => $state->pluck('name')->implode(', ')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')
                     ->dateTime()
