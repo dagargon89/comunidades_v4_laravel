@@ -34,9 +34,9 @@ class ActivityCalendarResource extends Resource
                     ->label('Fecha de inicio'),
                 Forms\Components\DatePicker::make('end_date')
                     ->label('Fecha de fin'),
-                Forms\Components\TextInput::make('start_hour')
+                Forms\Components\TimePicker::make('start_hour')
                     ->label('Hora de inicio'),
-                Forms\Components\TextInput::make('end_hour')
+                Forms\Components\TimePicker::make('end_hour')
                     ->label('Hora de fin'),
                 Forms\Components\Textarea::make('address_backup')
                     ->label('Respaldo de dirección')

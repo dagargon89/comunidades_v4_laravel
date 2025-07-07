@@ -68,12 +68,14 @@ class ActivityResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('specificObjective.description')
                     ->label('Objetivo específico')
+                    ->limit(50)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('responsible.name')
                     ->label('Responsable')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('goal.description')
                     ->label('Meta')
+                    ->limit(50)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')
