@@ -18,8 +18,6 @@ class BeneficiaryRegistryView extends Page
     protected static ?string $navigationLabel = 'Registro de Beneficiarios';
     protected static ?string $pluralLabel = 'Registro de Beneficiarios';
     protected static ?string $label = 'Registro de Beneficiario';
-    protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
-    protected static ?int $navigationSort = 8;
 
     protected static string $view = 'filament.pages.beneficiary-registry-view';
 
