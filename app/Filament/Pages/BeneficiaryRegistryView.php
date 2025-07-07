@@ -7,9 +7,13 @@ use Filament\Tables;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Models\BeneficiaryRegistry;
+use App\Models\Activity;
 use Filament\Tables\Actions;
 use Filament\Notifications\Notification;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
 
 class BeneficiaryRegistryView extends Page implements HasTable
@@ -18,9 +22,29 @@ class BeneficiaryRegistryView extends Page implements HasTable
 
     protected static string $view = 'filament.pages.beneficiary-registry-view';
 
+    public ?int $activity_id = null;
+
+    public function mount(): void
+    {
+        $this->activity_id = Activity::query()->value('id'); // Selecciona la primera actividad por defecto
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form->schema([
+            Select::make('activity_id')
+                ->label('Actividad')
+                ->options(Activity::pluck('description', 'id'))
+                ->searchable()
+                ->required()
+                ->live(),
+        ]);
+    }
+
     protected function getTableQuery()
     {
-        return BeneficiaryRegistry::query();
+        return BeneficiaryRegistry::query()
+            ->when($this->activity_id, fn ($q) => $q->where('activity_id', $this->activity_id));
     }
 
     protected function getTableColumns(): array
@@ -43,19 +67,21 @@ class BeneficiaryRegistryView extends Page implements HasTable
                 ->label('Registrar beneficiario único')
                 ->icon('heroicon-o-user-plus')
                 ->form([
-                    Forms\Components\TextInput::make('last_name')->label('Apellido Paterno')->required(),
-                    Forms\Components\TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
-                    Forms\Components\TextInput::make('first_names')->label('Nombres')->required(),
-                    Forms\Components\TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
-                    Forms\Components\Select::make('gender')->label('Género')->options([
+                    TextInput::make('last_name')->label('Apellido Paterno')->required(),
+                    TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
+                    TextInput::make('first_names')->label('Nombres')->required(),
+                    TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
+                    Select::make('gender')->label('Género')->options([
                         'Masculino' => 'Masculino',
                         'Femenino' => 'Femenino',
                         'Otro' => 'Otro',
                     ])->required(),
-                    Forms\Components\TextInput::make('phone')->label('Teléfono')->tel(),
+                    TextInput::make('phone')->label('Teléfono')->tel(),
                 ])
                 ->action(function (array $data): void {
-                    BeneficiaryRegistry::create($data);
+                    BeneficiaryRegistry::create(array_merge($data, [
+                        'activity_id' => $this->activity_id,
+                    ]));
                     Notification::make()
                         ->title('Beneficiario registrado correctamente')
                         ->success()
@@ -65,26 +91,28 @@ class BeneficiaryRegistryView extends Page implements HasTable
                 ->label('Registrar beneficiarios masivos')
                 ->icon('heroicon-o-users')
                 ->form([
-                    Forms\Components\Repeater::make('beneficiaries')
+                    Repeater::make('beneficiaries')
                         ->label('Beneficiarios')
                         ->schema([
-                            Forms\Components\TextInput::make('last_name')->label('Apellido Paterno')->required(),
-                            Forms\Components\TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
-                            Forms\Components\TextInput::make('first_names')->label('Nombres')->required(),
-                            Forms\Components\TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
-                            Forms\Components\Select::make('gender')->label('Género')->options([
+                            TextInput::make('last_name')->label('Apellido Paterno')->required(),
+                            TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
+                            TextInput::make('first_names')->label('Nombres')->required(),
+                            TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
+                            Select::make('gender')->label('Género')->options([
                                 'Masculino' => 'Masculino',
                                 'Femenino' => 'Femenino',
                                 'Otro' => 'Otro',
                             ])->required(),
-                            Forms\Components\TextInput::make('phone')->label('Teléfono')->tel(),
+                            TextInput::make('phone')->label('Teléfono')->tel(),
                         ])
                         ->minItems(1)
                         ->addActionLabel('Agregar otro beneficiario'),
                 ])
                 ->action(function (array $data): void {
                     foreach ($data['beneficiaries'] as $beneficiary) {
-                        BeneficiaryRegistry::create($beneficiary);
+                        BeneficiaryRegistry::create(array_merge($beneficiary, [
+                            'activity_id' => $this->activity_id,
+                        ]));
                     }
                     Notification::make()
                         ->title('Beneficiarios registrados correctamente')
