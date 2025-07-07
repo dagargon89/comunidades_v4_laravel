@@ -27,6 +27,8 @@ class BeneficiaryRegistry extends Model
         'activity_id',
         'location_id',
         'nullable_id',
+        'identifier',
+        'activity_date',
     ];
 
     /**
@@ -41,6 +43,7 @@ class BeneficiaryRegistry extends Model
             'activity_id' => 'integer',
             'location_id' => 'integer',
             'nullable_id' => 'integer',
+            'activity_date' => 'date',
         ];
     }
 
