@@ -206,34 +206,45 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     Repeater::make('beneficiaries')
                         ->label('Beneficiarios')
                         ->schema([
-                            TextInput::make('last_name')->label('Apellido Paterno')->required(),
-                            TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
-                            TextInput::make('first_names')->label('Nombres')->required(),
-                            TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
-                            Select::make('gender')->label('Género')->options([
-                                'Male' => 'Masculino',
-                                'Female' => 'Femenino',
-                            ])->required(),
-                            TextInput::make('phone')->label('Teléfono')->tel(),
-                            TextInput::make('signature')->label('Firma'),
+                            Forms\Components\Grid::make(2)
+                                ->schema([
+                                    TextInput::make('last_name')->label('Apellido Paterno')->required(),
+                                    TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
+                                ]),
+                            TextInput::make('first_names')->label('Nombres')->required()->columnSpanFull(),
+                            Forms\Components\Grid::make(3)
+                                ->schema([
+                                    TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
+                                    Select::make('gender')->label('Género')->options([
+                                        'Male' => 'Masculino',
+                                        'Female' => 'Femenino',
+                                    ])->required(),
+                                    TextInput::make('phone')->label('Teléfono')->tel(),
+                                ]),
+                            TextInput::make('signature')->label('Firma')->columnSpanFull(),
                             Forms\Components\Textarea::make('address_backup')
                                 ->label('Dirección de respaldo')
-                                ->rows(3),
-                            Select::make('location_id')->label('Ubicación')
-                                ->options(Location::pluck('name', 'id')->toArray())
-                                ->required()
-                                ->native(false)
-                                ->searchable()
-                                ->preload(),
-                            Select::make('data_collector_id')->label('Recolector de datos')
-                                ->options(DataCollector::pluck('name', 'id')->toArray())
-                                ->required()
-                                ->native(false)
-                                ->searchable()
-                                ->preload(),
+                                ->rows(2)
+                                ->columnSpanFull(),
+                            Forms\Components\Grid::make(2)
+                                ->schema([
+                                    Select::make('location_id')->label('Ubicación')
+                                        ->options(Location::pluck('name', 'id')->toArray())
+                                        ->required()
+                                        ->native(false)
+                                        ->searchable()
+                                        ->preload(),
+                                    Select::make('data_collector_id')->label('Recolector de datos')
+                                        ->options(DataCollector::pluck('name', 'id')->toArray())
+                                        ->required()
+                                        ->native(false)
+                                        ->searchable()
+                                        ->preload(),
+                                ]),
                         ])
                         ->minItems(1)
-                        ->addActionLabel('Agregar otro beneficiario'),
+                        ->addActionLabel('Agregar otro beneficiario')
+                        ->columns(1),
                 ])
                 ->action(function (array $data): void {
                     $calendarId = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
