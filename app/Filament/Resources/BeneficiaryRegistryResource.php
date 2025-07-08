@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class BeneficiaryRegistryResource extends Resource
 {
@@ -30,42 +31,34 @@ class BeneficiaryRegistryResource extends Resource
     {
         return $form
             ->schema([
-
-                Forms\Components\TextInput::make('last_name')
-                    ->label('Apellido paterno'),
-                Forms\Components\TextInput::make('mother_last_name')
-                    ->label('Apellido materno'),
-                Forms\Components\TextInput::make('first_names')
-                    ->label('Nombres'),
-                Forms\Components\TextInput::make('birth_year')
-                    ->label('Año de nacimiento'),
-                Forms\Components\Select::make('gender')
-                    ->label('Género')
-                    ->options([
-                        'male' => 'Masculino',
-                        'female' => 'Femenino',
+                Section::make('Datos personales')
+                    ->description('Información básica del beneficiario')
+                    ->schema([
+                        Forms\Components\TextInput::make('last_name')->label('Apellido paterno'),
+                        Forms\Components\TextInput::make('mother_last_name')->label('Apellido materno'),
+                        Forms\Components\TextInput::make('first_names')->label('Nombres'),
+                        Forms\Components\TextInput::make('birth_year')->label('Año de nacimiento'),
+                        Forms\Components\Select::make('gender')->label('Género')->options([
+                            'male' => 'Masculino',
+                            'female' => 'Femenino',
+                        ]),
+                        Forms\Components\TextInput::make('phone')->label('Teléfono')->tel(),
                     ]),
-                Forms\Components\TextInput::make('phone')
-                    ->label('Teléfono')
-                    ->tel(),
-                Forms\Components\Textarea::make('signature')
-                    ->label('Firma')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('address_backup')
-                    ->label('Respaldo de dirección')
-                    ->columnSpanFull(),
-                    Forms\Components\TextInput::make('identifier')
-                    ->label('Identificador')
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(255),
-                Forms\Components\Select::make('activity_id')
-                    ->label('Actividad')
-                    ->relationship('activity', 'description')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload()
-                    ->reactive(),
+                Section::make('Información de actividad')
+                    ->description('Datos de la actividad asociada')
+                    ->schema([
+                        Forms\Components\TextInput::make('identifier')->label('Identificador')->unique(ignoreRecord: true)->maxLength(255),
+                        Forms\Components\Select::make('activity_id')->label('Actividad')->relationship('activity', 'description')->required()->native(false)->searchable()->preload()->reactive(),
+                    ]),
+                Section::make('Firma')
+                    ->description('Firma digital del beneficiario')
+                    ->schema([
+                        Forms\Components\Textarea::make('signature')->label('Firma')->columnSpanFull(),
+                    ]),
+                Section::make('Ubicación y capturista')
+                    ->schema([
+                        Forms\Components\Textarea::make('address_backup')->label('Respaldo de dirección')->columnSpanFull(),
+                    ]),
             ]);
     }
 

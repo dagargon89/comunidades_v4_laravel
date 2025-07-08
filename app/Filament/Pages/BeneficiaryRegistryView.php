@@ -19,6 +19,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\View as ViewField;
+use Filament\Forms\Components\Section;
 
 class BeneficiaryRegistryView extends Page implements HasTable
 {
@@ -49,64 +50,49 @@ class BeneficiaryRegistryView extends Page implements HasTable
     public function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('activity_id')
-                ->label('Actividad')
-                ->options(Activity::pluck('description', 'id')->toArray())
-                ->searchable()
-                ->required()
-                ->live()
-                ->default(Activity::query()->min('id')),
-            Select::make('activity_calendar_date')
-                ->label('Fecha de la actividad')
-                ->options(function () {
-                    $activityId = $this->activity_id;
-                    if (!$activityId) {
-                        return [];
-                    }
-                    return \App\Models\ActivityCalendar::where('activity_id', $activityId)
-                        ->orderBy('start_date')
-                        ->get()
-                        ->pluck('start_date', 'start_date')
-                        ->unique()
-                        ->toArray();
-                })
-                ->required()
-                ->live()
-                ->default(function () {
-                    $activityId = $this->activity_id;
-                    if (!$activityId) {
-                        return null;
-                    }
-                    $firstCalendar = \App\Models\ActivityCalendar::where('activity_id', $activityId)
-                        ->orderBy('start_date')
-                        ->first();
-                    return $firstCalendar ? $firstCalendar->start_date : null;
-                })
-                ->native(false)
-                ->searchable()
-                ->preload()
-                ->afterStateUpdated(function ($state, $set) {
-                    $set('activity_calendar_date', $state);
-                }),
-            // Campo visual para el pad
-           // ViewField::make('signature')
-             //   ->view('filament.components.signature-pad')
-               // ->columnSpanFull(),
-            //Forms\Components\Textarea::make('address_backup')
-              //  ->label('Dirección de respaldo')
-                //->rows(3),
-            //Select::make('location_id')->label('Ubicación')
-              //  ->options(Location::pluck('name', 'id')->toArray())
-                //->required()
-                //->native(false)
-                //->searchable()
-                //->preload(),
-            //Select::make('data_collector_id')->label('Recolector de datos')
-              //  ->options(DataCollector::pluck('name', 'id')->toArray())
-                //->required()
-                //->native(false)
-                //->searchable()
-                //->preload(),
+            Section::make('Información de actividad')
+                ->description('Datos de la actividad asociada')
+                ->schema([
+                    Select::make('activity_id')
+                        ->label('Actividad')
+                        ->options(Activity::pluck('description', 'id')->toArray())
+                        ->searchable()
+                        ->required()
+                        ->live()
+                        ->default(Activity::query()->min('id')),
+                    Select::make('activity_calendar_date')
+                        ->label('Fecha de la actividad')
+                        ->options(function () {
+                            $activityId = $this->activity_id;
+                            if (!$activityId) {
+                                return [];
+                            }
+                            return \App\Models\ActivityCalendar::where('activity_id', $activityId)
+                                ->orderBy('start_date')
+                                ->get()
+                                ->pluck('start_date', 'start_date')
+                                ->unique()
+                                ->toArray();
+                        })
+                        ->required()
+                        ->live()
+                        ->default(function () {
+                            $activityId = $this->activity_id;
+                            if (!$activityId) {
+                                return null;
+                            }
+                            $firstCalendar = \App\Models\ActivityCalendar::where('activity_id', $activityId)
+                                ->orderBy('start_date')
+                                ->first();
+                            return $firstCalendar ? $firstCalendar->start_date : null;
+                        })
+                        ->native(false)
+                        ->searchable()
+                        ->preload()
+                        ->afterStateUpdated(function ($state, $set) {
+                            $set('activity_calendar_date', $state);
+                        }),
+                ]),
         ]);
     }
 
