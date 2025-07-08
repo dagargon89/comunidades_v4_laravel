@@ -80,6 +80,9 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->first();
                     return $firstCalendar ? $firstCalendar->start_date : null;
                 })
+                ->native(false)
+                ->searchable()
+                ->preload()
                 ->afterStateUpdated(function ($state, $set) {
                     $set('activity_calendar_date', $state);
                 }),
