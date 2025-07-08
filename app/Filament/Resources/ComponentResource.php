@@ -30,15 +30,20 @@ class ComponentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre'),
-                Forms\Components\Select::make('action_line_id')
-                    ->label('Línea de acción')
-                    ->relationship('actionLine', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                \Filament\Forms\Components\Section::make('Información del componente')
+                    ->description('Datos principales del componente y su relación con la línea de acción.')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre'),
+                        Forms\Components\Select::make('action_line_id')
+                            ->label('Línea de acción')
+                            ->relationship('actionLine', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columns(2),
             ]);
     }
 

@@ -34,31 +34,68 @@ class BeneficiaryRegistryResource extends Resource
                 Section::make('Datos personales')
                     ->description('Información básica del beneficiario')
                     ->schema([
-                        Forms\Components\TextInput::make('last_name')->label('Apellido paterno'),
-                        Forms\Components\TextInput::make('mother_last_name')->label('Apellido materno'),
-                        Forms\Components\TextInput::make('first_names')->label('Nombres'),
-                        Forms\Components\TextInput::make('birth_year')->label('Año de nacimiento'),
+                        Forms\Components\TextInput::make('last_name')->label('Apellido paterno')->required(),
+                        Forms\Components\TextInput::make('mother_last_name')->label('Apellido materno')->required(),
+                        Forms\Components\TextInput::make('first_names')->label('Nombres')->required(),
+                        Forms\Components\TextInput::make('birth_year')->label('Año de nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
                         Forms\Components\Select::make('gender')->label('Género')->options([
-                            'male' => 'Masculino',
-                            'female' => 'Femenino',
-                        ]),
+                            'Male' => 'Masculino',
+                            'Female' => 'Femenino',
+                        ])->required(),
                         Forms\Components\TextInput::make('phone')->label('Teléfono')->tel(),
-                    ]),
+                    ])->columns(3),
                 Section::make('Información de actividad')
                     ->description('Datos de la actividad asociada')
                     ->schema([
+                        Forms\Components\Select::make('activity_id')
+                            ->label('Actividad')
+                            ->relationship('activity', 'description')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload()
+                            ->reactive(),
+                        Forms\Components\Select::make('activity_calendar_id')
+                            ->label('Fecha de la actividad')
+                            ->options(function (callable $get) {
+                                $activityId = $get('activity_id');
+                                if (!$activityId) return [];
+                                return \App\Models\ActivityCalendar::where('activity_id', $activityId)
+                                    ->orderBy('start_date')
+                                    ->get()
+                                    ->pluck('start_date', 'id')
+                                    ->toArray();
+                            })
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload()
+                            ->reactive(),
                         Forms\Components\TextInput::make('identifier')->label('Identificador')->unique(ignoreRecord: true)->maxLength(255),
-                        Forms\Components\Select::make('activity_id')->label('Actividad')->relationship('activity', 'description')->required()->native(false)->searchable()->preload()->reactive(),
-                    ]),
+                    ])->columns(3),
                 Section::make('Firma')
                     ->description('Firma digital del beneficiario')
                     ->schema([
-                        Forms\Components\Textarea::make('signature')->label('Firma')->columnSpanFull(),
+                        Forms\Components\View::make('signature')
+                            ->view('filament.components.signature-pad')
+                            ->columnSpanFull(),
                     ]),
                 Section::make('Ubicación y capturista')
                     ->schema([
                         Forms\Components\Textarea::make('address_backup')->label('Respaldo de dirección')->columnSpanFull(),
-                    ]),
+                        Forms\Components\Select::make('location_id')->label('Ubicación')
+                            ->relationship('location', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('data_collector_id')->label('Recolector de datos')
+                            ->relationship('dataCollector', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ])->columns(2),
             ]);
     }
 
