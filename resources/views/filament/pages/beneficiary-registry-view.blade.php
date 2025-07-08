@@ -1,4 +1,7 @@
 <x-filament-panels::page>
+    <x-slot name="header">
+        <h1 class="text-2xl font-bold tracking-tight">Registro de Beneficiarios</h1>
+    </x-slot>
     {{ $this->form }}
 
     @php $info = $this->getActivityInfo(); @endphp
