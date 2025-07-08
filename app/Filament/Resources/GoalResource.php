@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class GoalResource extends Resource
 {
@@ -30,26 +31,34 @@ class GoalResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Textarea::make('description')
-                    ->label('Descripción')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('number')
-                    ->label('Número')
-                    ->numeric(),
-                Forms\Components\Select::make('component_id')
-                    ->label('Componente')
-                    ->relationship('component', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('organization_id')
-                    ->label('Organización')
-                    ->relationship('organization', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Section::make('Descripción de la meta')
+                    ->description('Información principal de la meta')
+                    ->schema([
+                        Forms\Components\Textarea::make('description')
+                            ->label('Descripción')
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('number')
+                            ->label('Número')
+                            ->numeric(),
+                    ]),
+                Section::make('Relaciones')
+                    ->description('Vinculación con otros recursos')
+                    ->schema([
+                        Forms\Components\Select::make('component_id')
+                            ->label('Componente')
+                            ->relationship('component', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('organization_id')
+                            ->label('Organización')
+                            ->relationship('organization', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ]),
             ]);
     }
 

@@ -3,45 +3,7 @@
         <h1 class="text-2xl font-bold tracking-tight">Registro de Beneficiarios</h1>
     </x-slot>
 
-    @php
-        $canvasId = 'signature-canvas-' . uniqid();
-        $inputId = 'signature-input-' . uniqid();
-        $clearId = 'clear-signature-' . uniqid();
-    @endphp
-    <div style="display:none !important;">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Firma del beneficiario</label>
-        <div class="border rounded bg-white" style="width: 350px; height: 120px;">
-            <canvas id="{{ $canvasId }}" width="350" height="120"></canvas>
-        </div>
-        <button type="button" id="{{ $clearId }}" class="mt-2 text-xs text-red-500">Limpiar firma</button>
-        <input type="hidden" id="{{ $inputId }}" name="signature" />
-    </div>
-
-    @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.6/dist/signature_pad.umd.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const canvas = document.getElementById(@json($canvasId));
-            const input = document.getElementById(@json($inputId));
-            const clearBtn = document.getElementById(@json($clearId));
-            const signaturePad = new SignaturePad(canvas, { backgroundColor: 'white' });
-
-            clearBtn.addEventListener('click', function () {
-                signaturePad.clear();
-                input.value = '';
-            });
-
-            function updateSignatureField() {
-                if (!signaturePad.isEmpty()) {
-                    input.value = signaturePad.toDataURL();
-                }
-            }
-
-            canvas.addEventListener('mouseup', updateSignatureField);
-            canvas.addEventListener('touchend', updateSignatureField);
-        });
-    </script>
-    @endpush
+    {{-- Se elimina el bloque de firma digital, ahora gestionado por el campo custom en el formulario Filament --}}
 
     {{ $this->form }}
 

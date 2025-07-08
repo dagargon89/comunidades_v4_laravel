@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class UserResource extends Resource
 {
@@ -28,19 +29,23 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\TextInput::make('email')
-                    ->label('Correo electrónico')
-                    ->email()
-                    ->required(),
-                Forms\Components\DateTimePicker::make('email_verified_at')
-                    ->label('Correo verificado en'),
-                Forms\Components\TextInput::make('password')
-                    ->label('Contraseña')
-                    ->password()
-                    ->required(),
+                Section::make('Datos del usuario')
+                    ->description('Información básica del usuario')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required(),
+                        Forms\Components\TextInput::make('email')
+                            ->label('Correo electrónico')
+                            ->email()
+                            ->required(),
+                        Forms\Components\DateTimePicker::make('email_verified_at')
+                            ->label('Correo verificado en'),
+                        Forms\Components\TextInput::make('password')
+                            ->label('Contraseña')
+                            ->password()
+                            ->required(),
+                    ]),
             ]);
     }
 

@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class ActionLineResource extends Resource
 {
@@ -30,16 +31,24 @@ class ActionLineResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\Select::make('program_id')
-                    ->label('Programa')
-                    ->relationship('program', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Section::make('Datos de la línea de acción')
+                    ->description('Información básica de la línea de acción')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required(),
+                    ]),
+                Section::make('Relaciones')
+                    ->description('Vinculación con otros recursos')
+                    ->schema([
+                        Forms\Components\Select::make('program_id')
+                            ->label('Programa')
+                            ->relationship('program', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ]),
             ]);
     }
 

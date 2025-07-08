@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class ProjectResource extends Resource
 {
@@ -31,25 +32,33 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\Textarea::make('background')
-                    ->label('Antecedentes')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('justification')
-                    ->label('Justificación')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('general_objective')
-                    ->label('Objetivo general')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('financier_id')
-                    ->label('Financiador')
-                    ->relationship('financier', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Section::make('Información general')
+                    ->description('Datos principales del proyecto')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required(),
+                        Forms\Components\Textarea::make('background')
+                            ->label('Antecedentes')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('justification')
+                            ->label('Justificación')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('general_objective')
+                            ->label('Objetivo general')
+                            ->columnSpanFull(),
+                    ]),
+                Section::make('Relaciones')
+                    ->description('Vinculación con otros recursos')
+                    ->schema([
+                        Forms\Components\Select::make('financier_id')
+                            ->label('Financiador')
+                            ->relationship('financier', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ]),
             ]);
     }
 

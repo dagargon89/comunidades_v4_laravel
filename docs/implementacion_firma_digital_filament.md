@@ -505,6 +505,13 @@ protected $fillable = [
 -   En formularios de acciones: usar `ViewField::make('signature')`
 -   En Resource principal: usar `Forms\Components\Textarea::make('signature')`
 
+### d) Campo de firma en el schema del formulario
+
+-   El campo de firma debe estar **solo** en el schema del formulario, no fuera de él
+-   Si tienes un bloque de firma fuera del formulario, ocúltalo con `display:none`
+-   El campo en la base de datos debe ser `text` o `longText`
+-   Puedes mostrar la firma guardada usando `<img src="{{ $registro->signature }}" />`
+
 ---
 
 ## 8. Solución de Problemas

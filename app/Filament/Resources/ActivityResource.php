@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class ActivityResource extends Resource
 {
@@ -31,30 +32,38 @@ class ActivityResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Textarea::make('description')
-                    ->label('Descripción')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('specific_objective_id')
-                    ->label('Objetivo específico')
-                    ->relationship('specificObjective', 'description')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('responsible_id')
-                    ->label('Responsable')
-                    ->relationship('responsible', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('goal_id')
-                    ->label('Meta')
-                    ->relationship('goal', 'description')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Section::make('Descripción de la actividad')
+                    ->description('Información principal de la actividad')
+                    ->schema([
+                        Forms\Components\Textarea::make('description')
+                            ->label('Descripción')
+                            ->columnSpanFull(),
+                    ]),
+                Section::make('Relaciones')
+                    ->description('Vinculación con otros recursos')
+                    ->schema([
+                        Forms\Components\Select::make('specific_objective_id')
+                            ->label('Objetivo específico')
+                            ->relationship('specificObjective', 'description')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('responsible_id')
+                            ->label('Responsable')
+                            ->relationship('responsible', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('goal_id')
+                            ->label('Meta')
+                            ->relationship('goal', 'description')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ]),
             ]);
     }
 
