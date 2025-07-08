@@ -248,7 +248,12 @@ class BeneficiaryRegistryView extends Page implements HasTable
                                     ])->required(),
                                     TextInput::make('phone')->label('Teléfono')->tel(),
                                 ]),
-                            TextInput::make('signature')->label('Firma')->columnSpanFull(),
+                            // Campo visual para el pad de firma
+                            ViewField::make('signature')
+                                ->view('filament.components.signature-pad')
+                                ->columnSpanFull(),
+                            TextInput::make('signature')->label('Firma')->hidden(), // Para compatibilidad, pero no se muestra
+                            TextInput::make('signature')->label('Firma')->hidden(),
                             Forms\Components\Textarea::make('address_backup')
                                 ->label('Dirección de respaldo')
                                 ->rows(2)
