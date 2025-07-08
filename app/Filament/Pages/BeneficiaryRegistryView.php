@@ -89,24 +89,24 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     $set('activity_calendar_date', $state);
                 }),
             // Campo visual para el pad
-            ViewField::make('signature')
-                ->view('filament.components.signature-pad')
-                ->columnSpanFull(),
-            Forms\Components\Textarea::make('address_backup')
-                ->label('Dirección de respaldo')
-                ->rows(3),
-            Select::make('location_id')->label('Ubicación')
-                ->options(Location::pluck('name', 'id')->toArray())
-                ->required()
-                ->native(false)
-                ->searchable()
-                ->preload(),
-            Select::make('data_collector_id')->label('Recolector de datos')
-                ->options(DataCollector::pluck('name', 'id')->toArray())
-                ->required()
-                ->native(false)
-                ->searchable()
-                ->preload(),
+           // ViewField::make('signature')
+             //   ->view('filament.components.signature-pad')
+               // ->columnSpanFull(),
+            //Forms\Components\Textarea::make('address_backup')
+              //  ->label('Dirección de respaldo')
+                //->rows(3),
+            //Select::make('location_id')->label('Ubicación')
+              //  ->options(Location::pluck('name', 'id')->toArray())
+                //->required()
+                //->native(false)
+                //->searchable()
+                //->preload(),
+            //Select::make('data_collector_id')->label('Recolector de datos')
+              //  ->options(DataCollector::pluck('name', 'id')->toArray())
+                //->required()
+                //->native(false)
+                //->searchable()
+                //->preload(),
         ]);
     }
 

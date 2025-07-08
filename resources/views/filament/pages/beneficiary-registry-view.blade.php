@@ -8,7 +8,7 @@
         $inputId = 'signature-input-' . uniqid();
         $clearId = 'clear-signature-' . uniqid();
     @endphp
-    <div style="display:none;">
+    <div style="display:none !important;">
         <label class="block text-sm font-medium text-gray-700 mb-1">Firma del beneficiario</label>
         <div class="border rounded bg-white" style="width: 350px; height: 120px;">
             <canvas id="{{ $canvasId }}" width="350" height="120"></canvas>
