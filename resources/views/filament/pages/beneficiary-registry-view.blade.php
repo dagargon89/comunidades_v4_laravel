@@ -3,32 +3,30 @@
 
     @php $info = $this->getActivityInfo(); @endphp
     @if($info)
-        <div style="margin-bottom: 1.5rem;">
-            <x-filament::card>
-                <dl style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
-                    <div>
-                        <dt><strong>Actividad</strong></dt>
-                        <dd>{{ $info['actividad'] }}</dd>
-                    </div>
-                    <div>
-                        <dt><strong>Fecha</strong></dt>
-                        <dd>{{ $info['fecha'] }}</dd>
-                    </div>
-                    <div>
-                        <dt><strong>Hora de inicio</strong></dt>
-                        <dd>{{ $info['hora_inicio'] }}</dd>
-                    </div>
-                    <div>
-                        <dt><strong>Hora de fin</strong></dt>
-                        <dd>{{ $info['hora_fin'] }}</dd>
-                    </div>
-                    <div>
-                        <dt><strong>Responsable</strong></dt>
-                        <dd>{{ $info['responsable'] }}</dd>
-                    </div>
-                </dl>
-            </x-filament::card>
-        </div>
+        <x-filament::section>
+            <x-filament::grid default="1" md="3" xl="5" class="gap-4">
+                <x-filament::card class="bg-primary-50 border-primary-200">
+                    <div class="text-xs text-primary-600 font-semibold uppercase mb-1">Actividad</div>
+                    <div class="text-base font-bold text-primary-900">{{ $info['actividad'] }}</div>
+                </x-filament::card>
+                <x-filament::card>
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Fecha</div>
+                    <div class="text-base font-bold text-gray-900">{{ $info['fecha'] }}</div>
+                </x-filament::card>
+                <x-filament::card>
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Hora de inicio</div>
+                    <div class="text-base font-bold text-gray-900">{{ $info['hora_inicio'] }}</div>
+                </x-filament::card>
+                <x-filament::card>
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Hora de fin</div>
+                    <div class="text-base font-bold text-gray-900">{{ $info['hora_fin'] }}</div>
+                </x-filament::card>
+                <x-filament::card>
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Responsable</div>
+                    <div class="text-base font-bold text-gray-900">{{ $info['responsable'] }}</div>
+                </x-filament::card>
+            </x-filament::grid>
+        </x-filament::section>
     @endif
 
     {{ $this->table }}
