@@ -249,4 +249,27 @@ class BeneficiaryRegistryView extends Page implements HasTable
                 }),
         ];
     }
+
+    public function getActivityInfo(): ?array
+    {
+        if (!$this->activity_id || !$this->activity_calendar_date) {
+            return null;
+        }
+        $calendar = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
+            ->where('start_date', $this->activity_calendar_date)
+            ->orderBy('id')
+            ->first();
+        if (!$calendar) {
+            return null;
+        }
+        $activity = $calendar->activity;
+        $responsible = $activity?->responsible?->name ?? '-';
+        return [
+            'actividad' => $activity?->description ?? '-',
+            'fecha' => $calendar->start_date ?? '-',
+            'hora_inicio' => $calendar->start_hour ?? '-',
+            'hora_fin' => $calendar->end_hour ?? '-',
+            'responsable' => $responsible,
+        ];
+    }
 }
