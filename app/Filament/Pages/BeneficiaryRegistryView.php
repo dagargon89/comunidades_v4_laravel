@@ -25,11 +25,19 @@ class BeneficiaryRegistryView extends Page implements HasTable
     protected static string $view = 'filament.pages.beneficiary-registry-view';
 
     public ?int $activity_id = null;
+    public ?string $activity_calendar_date = null;
 
     public function mount(): void
     {
-        // Selecciona la primera actividad como valor por defecto si existe
         $this->activity_id = Activity::query()->min('id') ?? null;
+        // Selecciona la primera fecha disponible para la actividad predeterminada
+        $firstCalendar = null;
+        if ($this->activity_id) {
+            $firstCalendar = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
+                ->orderBy('start_date')
+                ->first();
+        }
+        $this->activity_calendar_date = $firstCalendar ? $firstCalendar->start_date : null;
     }
 
     public function form(Form $form): Form
@@ -42,22 +50,74 @@ class BeneficiaryRegistryView extends Page implements HasTable
                 ->required()
                 ->live()
                 ->default(Activity::query()->min('id')),
+            Select::make('activity_calendar_date')
+                ->label('Fecha de la actividad')
+                ->options(function () {
+                    $activityId = $this->activity_id;
+                    if (!$activityId) {
+                        return [];
+                    }
+                    return \App\Models\ActivityCalendar::where('activity_id', $activityId)
+                        ->orderBy('start_date')
+                        ->get()
+                        ->pluck('start_date', 'start_date')
+                        ->unique()
+                        ->toArray();
+                })
+                ->required()
+                ->live()
+                ->default(function () {
+                    $activityId = $this->activity_id;
+                    if (!$activityId) {
+                        return null;
+                    }
+                    $firstCalendar = \App\Models\ActivityCalendar::where('activity_id', $activityId)
+                        ->orderBy('start_date')
+                        ->first();
+                    return $firstCalendar ? $firstCalendar->start_date : null;
+                })
+                ->afterStateUpdated(function ($state, $set) {
+                    $set('activity_calendar_date', $state);
+                }),
         ]);
     }
 
     public function updatedActivityId($value): void
     {
         $this->activity_id = $value ? (int) $value : null;
+        // Buscar la primera fecha disponible para la nueva actividad
+        $firstCalendar = null;
+        if ($this->activity_id) {
+            $firstCalendar = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
+                ->orderBy('start_date')
+                ->first();
+        }
+        $this->activity_calendar_date = $firstCalendar ? $firstCalendar->start_date : null;
+        $this->resetTable();
+    }
+
+    public function updatedActivityCalendarDate($value): void
+    {
+        $this->activity_calendar_date = $value;
         $this->resetTable();
     }
 
     protected function getTableQuery()
     {
-        if (!$this->activity_id || $this->activity_id <= 0) {
+        if (
+            !$this->activity_id || $this->activity_id <= 0 ||
+            !$this->activity_calendar_date
+        ) {
             return BeneficiaryRegistry::query()->whereRaw('1=0');
         }
+        // Buscar los IDs de calendarios con esa fecha y actividad
+        $calendarIds = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
+            ->where('start_date', $this->activity_calendar_date)
+            ->pluck('id');
+
         return BeneficiaryRegistry::query()
-            ->when($this->activity_id, fn ($q) => $q->where('activity_id', $this->activity_id));
+            ->where('activity_id', $this->activity_id)
+            ->whereIn('activity_calendar_id', $calendarIds);
     }
 
     protected function shouldRenderTable(): bool
@@ -80,13 +140,14 @@ class BeneficiaryRegistryView extends Page implements HasTable
                 }),
             Tables\Columns\TextColumn::make('phone')->label('Teléfono'),
             Tables\Columns\TextColumn::make('activity.description')->label('Actividad')->limit(50),
+            Tables\Columns\TextColumn::make('activityCalendar.start_date')->label('Fecha de la actividad')->date('d/m/Y'),
             Tables\Columns\TextColumn::make('created_at')->label('Registrado el')->dateTime('d/m/Y H:i'),
         ];
     }
 
     protected function getTableHeaderActions(): array
     {
-        if (!$this->activity_id || $this->activity_id <= 0) {
+        if (!$this->activity_id || $this->activity_id <= 0 || !$this->activity_calendar_date) {
             return [];
         }
         return [
@@ -121,8 +182,13 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->preload(),
                 ])
                 ->action(function (array $data): void {
+                    $calendarId = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
+                        ->where('start_date', $this->activity_calendar_date)
+                        ->orderBy('id')
+                        ->value('id');
                     BeneficiaryRegistry::create(array_merge($data, [
                         'activity_id' => $this->activity_id,
+                        'activity_calendar_id' => $calendarId,
                     ]));
                     Notification::make()
                         ->title('Beneficiario registrado correctamente')
@@ -146,29 +212,34 @@ class BeneficiaryRegistryView extends Page implements HasTable
                             ])->required(),
                             TextInput::make('phone')->label('Teléfono')->tel(),
                             TextInput::make('signature')->label('Firma'),
-                    Forms\Components\Textarea::make('address_backup')
-                        ->label('Dirección de respaldo')
-                        ->rows(3),
-                    Select::make('location_id')->label('Ubicación')
-                        ->options(Location::pluck('name', 'id')->toArray())
-                        ->required()
-                        ->native(false)
-                        ->searchable()
-                        ->preload(),
-                    Select::make('data_collector_id')->label('Recolector de datos')
-                        ->options(DataCollector::pluck('name', 'id')->toArray())
-                        ->required()
-                        ->native(false)
-                        ->searchable()
-                        ->preload(),
+                            Forms\Components\Textarea::make('address_backup')
+                                ->label('Dirección de respaldo')
+                                ->rows(3),
+                            Select::make('location_id')->label('Ubicación')
+                                ->options(Location::pluck('name', 'id')->toArray())
+                                ->required()
+                                ->native(false)
+                                ->searchable()
+                                ->preload(),
+                            Select::make('data_collector_id')->label('Recolector de datos')
+                                ->options(DataCollector::pluck('name', 'id')->toArray())
+                                ->required()
+                                ->native(false)
+                                ->searchable()
+                                ->preload(),
                         ])
                         ->minItems(1)
                         ->addActionLabel('Agregar otro beneficiario'),
                 ])
                 ->action(function (array $data): void {
+                    $calendarId = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
+                        ->where('start_date', $this->activity_calendar_date)
+                        ->orderBy('id')
+                        ->value('id');
                     foreach ($data['beneficiaries'] as $beneficiary) {
                         BeneficiaryRegistry::create(array_merge($beneficiary, [
                             'activity_id' => $this->activity_id,
+                            'activity_calendar_id' => $calendarId,
                         ]));
                     }
                     Notification::make()

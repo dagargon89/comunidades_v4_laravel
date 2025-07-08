@@ -64,22 +64,8 @@ class BeneficiaryRegistryResource extends Resource
                     ->required()
                     ->native(false)
                     ->searchable()
-                    ->preload(),
-                Forms\Components\DatePicker::make('activity_date')
-                    ->label('Fecha de la actividad'),
-                Forms\Components\Select::make('location_id')
-                    ->label('Ubicación')
-                    ->relationship('location', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('data_collector_id')
-                    ->label('Capturista')
-                    ->relationship('dataCollector', 'name')
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->reactive(),
             ]);
     }
 
@@ -112,9 +98,10 @@ class BeneficiaryRegistryResource extends Resource
                     ->label('Actividad')
                     ->limit(50)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('activity_date')
-                    ->label('Fecha de la actividad')
-                    ->date(),
+                Tables\Columns\TextColumn::make('activityCalendar.start_date')
+                    ->label('Calendario de actividad')
+                    ->date()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('location.name')
                     ->label('Ubicación')
                     ->sortable(),

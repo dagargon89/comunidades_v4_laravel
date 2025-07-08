@@ -29,6 +29,7 @@ class BeneficiaryRegistry extends Model
         'nullable_id',
         'identifier',
         'activity_date',
+        'activity_calendar_id',
     ];
 
     /**
@@ -44,13 +45,11 @@ class BeneficiaryRegistry extends Model
             'location_id' => 'integer',
             'nullable_id' => 'integer',
             'activity_date' => 'date',
+            'activity_calendar_id' => 'integer',
         ];
     }
 
-    public function activity(): BelongsTo
-    {
-        return $this->belongsTo(Activity::class);
-    }
+
 
     public function location(): BelongsTo
     {
@@ -60,5 +59,15 @@ class BeneficiaryRegistry extends Model
     public function dataCollector(): BelongsTo
     {
         return $this->belongsTo(DataCollector::class);
+    }
+
+    public function activityCalendar(): BelongsTo
+    {
+        return $this->belongsTo(ActivityCalendar::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
     }
 }
