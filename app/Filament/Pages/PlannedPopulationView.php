@@ -10,10 +10,11 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\PlannedPopulation;
 use Filament\Tables\Filters\MultiSelectFilter;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class PlannedPopulationView extends Page implements HasTable
 {
-    use InteractsWithTable;
+    use InteractsWithTable, HasPageShield;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Población Planificada';

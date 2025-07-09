@@ -7,9 +7,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\ActivitySummary;
 use App\Models\PlannedProducts;
 use App\Models\PlannedPopulation;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class DashboardStats extends BaseWidget
 {
+    use HasWidgetShield;
+
     protected function getStats(): array
     {
         return [

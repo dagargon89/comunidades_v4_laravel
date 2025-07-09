@@ -12,10 +12,11 @@ use App\Models\ActivitySummary;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class ActivitySummaryView extends Page implements HasTable
 {
-    use InteractsWithTable;
+    use InteractsWithTable, HasPageShield;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Resumen de Actividades';

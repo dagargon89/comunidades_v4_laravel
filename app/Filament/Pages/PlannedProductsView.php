@@ -10,10 +10,11 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\PlannedProducts;
 use Filament\Tables\Filters\MultiSelectFilter;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class PlannedProductsView extends Page implements HasTable
 {
-    use InteractsWithTable;
+    use InteractsWithTable, HasPageShield;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
     protected static ?string $navigationLabel = 'Productos Planificados';
