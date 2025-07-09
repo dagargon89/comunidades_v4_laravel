@@ -20,6 +20,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\View as ViewField;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Placeholder;
 
 class BeneficiaryRegistryView extends Page implements HasTable
 {
@@ -215,50 +216,43 @@ class BeneficiaryRegistryView extends Page implements HasTable
             Actions\Action::make('addMassive')
                 ->label('Registrar beneficiarios masivos')
                 ->icon('heroicon-o-users')
+                ->modalWidth('10xl')
                 ->form([
                     Repeater::make('beneficiaries')
                         ->label('Beneficiarios')
                         ->schema([
-                            Forms\Components\Grid::make(2)
+                            Forms\Components\Grid::make([])
                                 ->schema([
-                                    TextInput::make('last_name')->label('Apellido Paterno')->required(),
-                                    TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
-                                ]),
-                            TextInput::make('first_names')->label('Nombres')->required()->columnSpanFull(),
-                            Forms\Components\Grid::make(3)
-                                ->schema([
-                                    TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
-                                    Select::make('gender')->label('Género')->options([
+                                    TextInput::make('first_names')->label('Nombre(s)')->columnSpan(3),
+                                    TextInput::make('last_name')->label('Apellido Paterno')->columnSpan(3),
+                                    TextInput::make('mother_last_name')->label('Apellido Materno')->columnSpan(3),
+                                    Forms\Components\DatePicker::make('birth_date')->label('Fecha Nacimiento')->columnSpan(2),
+                                    Select::make('gender')->label('Sexo')->options([
                                         'Male' => 'Masculino',
                                         'Female' => 'Femenino',
-                                    ])->required(),
-                                    TextInput::make('phone')->label('Teléfono')->tel(),
-                                ]),
-                            // Campo visual para el pad de firma
-                            ViewField::make('signature')
-                                ->view('filament.components.signature-pad')
-                                ->columnSpanFull(),
-                            TextInput::make('signature')->label('Firma')->hidden(), // Para compatibilidad, pero no se muestra
-                            TextInput::make('signature')->label('Firma')->hidden(),
-                            Forms\Components\Textarea::make('address_backup')
-                                ->label('Dirección de respaldo')
-                                ->rows(2)
-                                ->columnSpanFull(),
-                            Forms\Components\Grid::make(2)
+                                    ])->columnSpan(1),
+                                    TextInput::make('phone')->label('Teléfono')->columnSpan(2),
+                                    TextInput::make('email')->label('Email')->email()->columnSpan(2),
+                                    TextInput::make('schooling')->label('Escolaridad')->columnSpan(2),
+                                    TextInput::make('occupation')->label('Ocupación')->columnSpan(2),
+                                ])->columns(21),
+                            Forms\Components\Grid::make([])
                                 ->schema([
-                                    Select::make('location_id')->label('Ubicación')
-                                        ->options(Location::pluck('name', 'id')->toArray())
-                                        ->required()
-                                        ->native(false)
-                                        ->searchable()
-                                        ->preload(),
-                                    Select::make('data_collector_id')->label('Recolector de datos')
-                                        ->options(DataCollector::pluck('name', 'id')->toArray())
-                                        ->required()
-                                        ->native(false)
-                                        ->searchable()
-                                        ->preload(),
-                                ]),
+                                    TextInput::make('colony')->label('Colonia')->columnSpan(2),
+                                    TextInput::make('street')->label('Calle y Número')->columnSpan(2),
+                                    TextInput::make('postal_code')->label('CP')->columnSpan(1),
+                                    TextInput::make('municipality')->label('Municipio')->columnSpan(2),
+                                    TextInput::make('state')->label('Estado')->columnSpan(2),
+                                    TextInput::make('organization')->label('Organización')->columnSpan(2),
+                                    TextInput::make('position')->label('Cargo')->columnSpan(2),
+                                    Forms\Components\DatePicker::make('attendance_date')->label('Fecha Asistencia')->columnSpan(2),
+                                    TextInput::make('observations')->label('Observaciones')->columnSpan(3),
+                                    Forms\Components\Placeholder::make('add_signature_placeholder')
+                                        ->label('')
+                                        ->content('Agregar firma')
+                                        ->columnSpan(1)
+                                        ->disableLabel(),
+                                ])->columns(19),
                         ])
                         ->minItems(1)
                         ->addActionLabel('Agregar otro beneficiario')
