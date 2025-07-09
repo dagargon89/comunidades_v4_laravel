@@ -39,6 +39,11 @@ class UserResource extends Resource
                             ->label('Correo electrónico')
                             ->email()
                             ->required(),
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable(),
                         Forms\Components\DateTimePicker::make('email_verified_at')
                             ->label('Correo verificado en'),
                         Forms\Components\TextInput::make('password')
@@ -58,6 +63,11 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->label('Correo electrónico')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Roles')
+                    ->badge()
+                    ->color('info')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->label('Correo verificado en')
