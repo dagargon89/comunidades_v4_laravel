@@ -9,6 +9,9 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\ActivitySummary;
+use Filament\Tables\Filters\MultiSelectFilter;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 
 class ActivitySummaryView extends Page implements HasTable
 {
@@ -66,6 +69,27 @@ class ActivitySummaryView extends Page implements HasTable
                     ->label('Beneficiarios')
                     ->sortable()
                     ->alignCenter(),
+            ])
+            ->filters([
+                MultiSelectFilter::make('project_name')
+                    ->label('Proyecto')
+                    ->options(fn () => ActivitySummary::query()->distinct()->pluck('project_name', 'project_name')->toArray()),
+                MultiSelectFilter::make('responsible_name')
+                    ->label('Responsable')
+                    ->options(fn () => ActivitySummary::query()->distinct()->pluck('responsible_name', 'responsible_name')->toArray()),
+                MultiSelectFilter::make('organization')
+                    ->label('Organización')
+                    ->options(fn () => ActivitySummary::query()->distinct()->pluck('organization', 'organization')->toArray()),
+                Filter::make('start_date')
+                    ->form([
+                        DatePicker::make('start_from')->label('Desde'),
+                        DatePicker::make('start_until')->label('Hasta'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['start_from'], fn ($q, $date) => $q->whereDate('start_date', '>=', $date))
+                            ->when($data['start_until'], fn ($q, $date) => $q->whereDate('start_date', '<=', $date));
+                    }),
             ])
             ->defaultSort('activity_name', 'asc')
             ->paginated([10, 25, 50, 100]);

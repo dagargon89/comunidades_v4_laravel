@@ -9,6 +9,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\PlannedPopulation;
+use Filament\Tables\Filters\MultiSelectFilter;
 
 class PlannedPopulationView extends Page implements HasTable
 {
@@ -57,6 +58,20 @@ class PlannedPopulationView extends Page implements HasTable
                     ->numeric()
                     ->sortable()
                     ->alignCenter(),
+            ])
+            ->filters([
+                MultiSelectFilter::make('responsible_name')
+                    ->label('Responsable')
+                    ->options(fn () => PlannedPopulation::query()->distinct()->pluck('responsible_name', 'responsible_name')->toArray()),
+                MultiSelectFilter::make('year')
+                    ->label('Año')
+                    ->options(fn () => PlannedPopulation::query()->distinct()->orderBy('year', 'desc')->pluck('year', 'year')->toArray()),
+                MultiSelectFilter::make('month')
+                    ->label('Mes')
+                    ->options(fn () => PlannedPopulation::query()->distinct()->orderBy('month')->pluck('month', 'month')->toArray()),
+                MultiSelectFilter::make('activity_name')
+                    ->label('Actividad')
+                    ->options(fn () => PlannedPopulation::query()->distinct()->pluck('activity_name', 'activity_name')->toArray()),
             ])
             ->defaultSort('year', 'desc')
             ->defaultSort('month', 'desc')
