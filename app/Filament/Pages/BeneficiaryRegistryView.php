@@ -154,9 +154,25 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     default => $state,
                 }),
             Tables\Columns\TextColumn::make('phone')->label('Teléfono'),
+            Tables\Columns\TextColumn::make('curp')->label('CURP'),
             Tables\Columns\TextColumn::make('activity.description')->label('Actividad')->limit(50),
             Tables\Columns\TextColumn::make('activityCalendar.start_date')->label('Fecha de la actividad')->date('d/m/Y'),
             Tables\Columns\TextColumn::make('created_at')->label('Registrado el')->dateTime('d/m/Y H:i'),
+        ];
+    }
+
+    protected function getTableFilters(): array
+    {
+        return [
+            Tables\Filters\Filter::make('curp')
+                ->form([
+                    TextInput::make('curp')->label('CURP'),
+                ])
+                ->query(function ($query, $data) {
+                    if (!empty($data['curp'])) {
+                        $query->where('curp', 'like', '%' . $data['curp'] . '%');
+                    }
+                }),
         ];
     }
 
@@ -204,7 +220,15 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->where('start_date', $this->activity_calendar_date)
                         ->orderBy('id')
                         ->value('id');
+                    $curp = \App\Models\BeneficiaryRegistry::generarCurpFiltro(
+                        $data['first_names'] ?? '',
+                        $data['last_name'] ?? '',
+                        $data['mother_last_name'] ?? '',
+                        $data['birth_year'] ?? '',
+                        $data['gender'] ?? ''
+                    );
                     BeneficiaryRegistry::create(array_merge($data, [
+                        'curp' => $curp,
                         'activity_id' => $this->activity_id,
                         'activity_calendar_id' => $calendarId,
                     ]));
@@ -223,36 +247,34 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->schema([
                             Forms\Components\Grid::make([])
                                 ->schema([
-                                    TextInput::make('first_names')->label('Nombre(s)')->columnSpan(3),
-                                    TextInput::make('last_name')->label('Apellido Paterno')->columnSpan(3),
-                                    TextInput::make('mother_last_name')->label('Apellido Materno')->columnSpan(3),
-                                    Forms\Components\DatePicker::make('birth_date')->label('Fecha Nacimiento')->columnSpan(2),
-                                    Select::make('gender')->label('Sexo')->options([
+                                    TextInput::make('last_name')->label('Apellido Paterno')->required()->columnSpan(2),
+                                    TextInput::make('mother_last_name')->label('Apellido Materno')->required()->columnSpan(2),
+                                    TextInput::make('first_names')->label('Nombres')->required()->columnSpan(3),
+                                    TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y'))->columnSpan(2),
+                                    Select::make('gender')->label('Género')->options([
                                         'Male' => 'Masculino',
                                         'Female' => 'Femenino',
-                                    ])->columnSpan(1),
-                                    TextInput::make('phone')->label('Teléfono')->columnSpan(2),
-                                    TextInput::make('email')->label('Email')->email()->columnSpan(2),
-                                    TextInput::make('schooling')->label('Escolaridad')->columnSpan(2),
-                                    TextInput::make('occupation')->label('Ocupación')->columnSpan(2),
-                                ])->columns(21),
-                            Forms\Components\Grid::make([])
-                                ->schema([
-                                    TextInput::make('colony')->label('Colonia')->columnSpan(2),
-                                    TextInput::make('street')->label('Calle y Número')->columnSpan(2),
-                                    TextInput::make('postal_code')->label('CP')->columnSpan(1),
-                                    TextInput::make('municipality')->label('Municipio')->columnSpan(2),
-                                    TextInput::make('state')->label('Estado')->columnSpan(2),
-                                    TextInput::make('organization')->label('Organización')->columnSpan(2),
-                                    TextInput::make('position')->label('Cargo')->columnSpan(2),
-                                    Forms\Components\DatePicker::make('attendance_date')->label('Fecha Asistencia')->columnSpan(2),
-                                    TextInput::make('observations')->label('Observaciones')->columnSpan(3),
+                                    ])->required()->columnSpan(1),
+                                    TextInput::make('phone')->label('Teléfono')->tel()->columnSpan(2),
+                                    Textarea::make('address_backup')->label('Dirección de respaldo')->rows(1)->columnSpan(3),
+                                    Select::make('location_id')->label('Ubicación')
+                                        ->options(Location::pluck('name', 'id')->toArray())
+                                        ->required()
+                                        ->native(false)
+                                        ->searchable()
+                                        ->preload()->columnSpan(2),
+                                    Select::make('data_collector_id')->label('Recolector de datos')
+                                        ->options(DataCollector::pluck('name', 'id')->toArray())
+                                        ->required()
+                                        ->native(false)
+                                        ->searchable()
+                                        ->preload()->columnSpan(2),
                                     Forms\Components\Placeholder::make('add_signature_placeholder')
                                         ->label('')
                                         ->content('Agregar firma')
                                         ->columnSpan(1)
                                         ->disableLabel(),
-                                ])->columns(19),
+                                ])->columns(20),
                         ])
                         ->minItems(1)
                         ->addActionLabel('Agregar otro beneficiario')
@@ -264,7 +286,15 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->orderBy('id')
                         ->value('id');
                     foreach ($data['beneficiaries'] as $beneficiary) {
+                        $curp = \App\Models\BeneficiaryRegistry::generarCurpFiltro(
+                            $beneficiary['first_names'] ?? '',
+                            $beneficiary['last_name'] ?? '',
+                            $beneficiary['mother_last_name'] ?? '',
+                            $beneficiary['birth_year'] ?? '',
+                            $beneficiary['gender'] ?? ''
+                        );
                         BeneficiaryRegistry::create(array_merge($beneficiary, [
+                            'curp' => $curp,
                             'activity_id' => $this->activity_id,
                             'activity_calendar_id' => $calendarId,
                         ]));

@@ -70,4 +70,22 @@ class BeneficiaryRegistry extends Model
     {
         return $this->belongsTo(Activity::class);
     }
+
+    public static function generarCurpFiltro($first_names, $last_name, $mother_last_name, $birth_year, $gender)
+    {
+        $iniciales = strtoupper(
+            substr($last_name, 0, 1) .
+            substr($mother_last_name, 0, 1) .
+            substr($first_names, 0, 1) .
+            (isset(explode(' ', $first_names)[1]) ? substr(explode(' ', $first_names)[1], 0, 1) : 'X')
+        );
+        $anio = $birth_year;
+        $sexo = strtoupper(substr($gender, 0, 1));
+        $internas = strtoupper(
+            (isset($last_name[1]) ? $last_name[1] : 'X') .
+            (isset($mother_last_name[1]) ? $mother_last_name[1] : 'X') .
+            (isset($first_names[1]) ? $first_names[1] : 'X')
+        );
+        return $iniciales . $anio . $sexo . $internas;
+    }
 }
