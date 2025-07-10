@@ -30,6 +30,7 @@ class BeneficiaryRegistry extends Model
         'identifier',
         'activity_date',
         'activity_calendar_id',
+        'data_collector_id',
     ];
 
     /**

@@ -307,6 +307,45 @@ class BeneficiaryRegistryView extends Page implements HasTable
         ];
     }
 
+    protected function getTableActions(): array
+    {
+        return [
+            Tables\Actions\EditAction::make()
+                ->form([
+                    TextInput::make('last_name')->label('Apellido Paterno')->required(),
+                    TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
+                    TextInput::make('first_names')->label('Nombres')->required(),
+                    TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y')),
+                    Select::make('gender')->label('Género')->options([
+                        'Male' => 'Masculino',
+                        'Female' => 'Femenino',
+                    ])->required(),
+                    TextInput::make('phone')->label('Teléfono')->tel(),
+                    // El identificador no se puede editar
+                    TextInput::make('identifier')->label('Identificador')->disabled(),
+                    ViewField::make('signature')
+                        ->view('filament.components.signature-pad')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('address_backup')
+                        ->label('Dirección de respaldo')
+                        ->rows(3),
+                    Select::make('location_id')->label('Ubicación')
+                        ->options(Location::pluck('name', 'id')->toArray())
+                        ->required()
+                        ->native(false)
+                        ->searchable()
+                        ->preload(),
+                    Select::make('data_collector_id')->label('Recolector de datos')
+                        ->options(DataCollector::pluck('name', 'id')->toArray())
+                        ->required()
+                        ->native(false)
+                        ->searchable()
+                        ->preload(),
+                ]),
+            Tables\Actions\DeleteAction::make(),
+        ];
+    }
+
     public function getActivityInfo(): ?array
     {
         if (!$this->activity_id || !$this->activity_calendar_date) {
