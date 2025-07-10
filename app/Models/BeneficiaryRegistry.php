@@ -66,12 +66,12 @@ class BeneficiaryRegistry extends Model
         return $this->belongsTo(ActivityCalendar::class);
     }
 
-    public function activity(): BelongsTo
+    public function activity()
     {
         return $this->belongsTo(Activity::class);
     }
 
-    public static function generarCurpFiltro($first_names, $last_name, $mother_last_name, $birth_year, $gender)
+    public static function generarIdentificador($first_names, $last_name, $mother_last_name, $birth_year, $gender)
     {
         $iniciales = strtoupper(
             substr($last_name, 0, 1) .

@@ -154,7 +154,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     default => $state,
                 }),
             Tables\Columns\TextColumn::make('phone')->label('Teléfono'),
-            Tables\Columns\TextColumn::make('curp')->label('CURP'),
+            Tables\Columns\TextColumn::make('identifier')->label('Identificador'),
             Tables\Columns\TextColumn::make('activity.description')->label('Actividad')->limit(50),
             Tables\Columns\TextColumn::make('activityCalendar.start_date')->label('Fecha de la actividad')->date('d/m/Y'),
             Tables\Columns\TextColumn::make('created_at')->label('Registrado el')->dateTime('d/m/Y H:i'),
@@ -164,13 +164,13 @@ class BeneficiaryRegistryView extends Page implements HasTable
     protected function getTableFilters(): array
     {
         return [
-            Tables\Filters\Filter::make('curp')
+            Tables\Filters\Filter::make('identifier')
                 ->form([
-                    TextInput::make('curp')->label('CURP'),
+                    TextInput::make('identifier')->label('Identificador'),
                 ])
                 ->query(function ($query, $data) {
-                    if (!empty($data['curp'])) {
-                        $query->where('curp', 'like', '%' . $data['curp'] . '%');
+                    if (!empty($data['identifier'])) {
+                        $query->where('identifier', 'like', '%' . $data['identifier'] . '%');
                     }
                 }),
         ];
@@ -195,6 +195,8 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         'Female' => 'Femenino',
                     ])->required(),
                     TextInput::make('phone')->label('Teléfono')->tel(),
+                    // Campo visible para el identificador (solo lectura)
+                    TextInput::make('identifier')->label('Identificador')->disabled()->dehydrated(),
                     // Campo visual para el pad
                     ViewField::make('signature')
                         ->view('filament.components.signature-pad')
@@ -220,7 +222,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->where('start_date', $this->activity_calendar_date)
                         ->orderBy('id')
                         ->value('id');
-                    $curp = \App\Models\BeneficiaryRegistry::generarCurpFiltro(
+                    $identifier = \App\Models\BeneficiaryRegistry::generarIdentificador(
                         $data['first_names'] ?? '',
                         $data['last_name'] ?? '',
                         $data['mother_last_name'] ?? '',
@@ -228,7 +230,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         $data['gender'] ?? ''
                     );
                     BeneficiaryRegistry::create(array_merge($data, [
-                        'curp' => $curp,
+                        'identifier' => $identifier,
                         'activity_id' => $this->activity_id,
                         'activity_calendar_id' => $calendarId,
                     ]));
@@ -256,6 +258,8 @@ class BeneficiaryRegistryView extends Page implements HasTable
                                         'Female' => 'Femenino',
                                     ])->required()->columnSpan(1),
                                     TextInput::make('phone')->label('Teléfono')->tel()->columnSpan(2),
+                                    // Campo visible para el identificador (solo lectura)
+                                    TextInput::make('identifier')->label('Identificador')->disabled()->dehydrated()->columnSpan(2),
                                     Textarea::make('address_backup')->label('Dirección de respaldo')->rows(1)->columnSpan(3),
                                     Select::make('location_id')->label('Ubicación')
                                         ->options(Location::pluck('name', 'id')->toArray())
@@ -286,7 +290,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->orderBy('id')
                         ->value('id');
                     foreach ($data['beneficiaries'] as $beneficiary) {
-                        $curp = \App\Models\BeneficiaryRegistry::generarCurpFiltro(
+                        $identifier = \App\Models\BeneficiaryRegistry::generarIdentificador(
                             $beneficiary['first_names'] ?? '',
                             $beneficiary['last_name'] ?? '',
                             $beneficiary['mother_last_name'] ?? '',
@@ -294,7 +298,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                             $beneficiary['gender'] ?? ''
                         );
                         BeneficiaryRegistry::create(array_merge($beneficiary, [
-                            'curp' => $curp,
+                            'identifier' => $identifier,
                             'activity_id' => $this->activity_id,
                             'activity_calendar_id' => $calendarId,
                         ]));
