@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ActivityFileResource\Pages;
 use App\Filament\Resources\ActivityFileResource\RelationManagers;
 use App\Models\ActivityFile;
+use App\Models\ActivityCalendar;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,20 +32,20 @@ class ActivityFileResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('month')
-                    ->label('Mes'),
-                Forms\Components\TextInput::make('type')
-                    ->label('Tipo'),
-                Forms\Components\Textarea::make('file_path')
-                    ->label('Ruta del archivo')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('activity_id')
-                    ->label('Actividad')
-                    ->relationship('activity', 'description')
+                Forms\Components\TextInput::make('file_name')
                     ->required()
-                    ->native(false)
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('file_path')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('activity_id')
+                    ->relationship('activity', 'description')
+                    ->required(),
+                Forms\Components\Select::make('activity_calendar_id')
+                    ->label('Fecha de la actividad')
+                    ->options(ActivityCalendar::all()->pluck('start_date', 'id'))
                     ->searchable()
-                    ->preload(),
+                    ->required(),
             ]);
     }
 
@@ -52,28 +53,14 @@ class ActivityFileResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('month')
-                    ->label('Mes')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->label('Tipo')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('activity.id')
-                    ->label('Actividad')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Creado el')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Actualizado el')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('file_name')->label('Nombre del archivo')->searchable(),
+                Tables\Columns\TextColumn::make('file_path')->label('Ruta')->limit(30),
+                Tables\Columns\TextColumn::make('activity.description')->label('Actividad'),
+                Tables\Columns\TextColumn::make('activityCalendar.start_date')->label('Fecha de la actividad'),
+                Tables\Columns\TextColumn::make('created_at')->label('Subido el')->dateTime('d/m/Y H:i'),
             ])
             ->filters([
-                //
+                // Puedes agregar filtros aquí si lo deseas
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

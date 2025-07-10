@@ -16,10 +16,10 @@ class ActivityFile extends Model
      * @var array
      */
     protected $fillable = [
-        'month',
-        'type',
+        'file_name',
         'file_path',
         'activity_id',
+        'activity_calendar_id',
     ];
 
     /**
@@ -39,5 +39,10 @@ class ActivityFile extends Model
     public function activity(): BelongsTo
     {
         return $this->belongsTo(Activity::class);
+    }
+
+    public function activityCalendar(): BelongsTo
+    {
+        return $this->belongsTo(ActivityCalendar::class);
     }
 }
