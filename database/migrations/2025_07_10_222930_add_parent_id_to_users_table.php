@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->unsignedBigInteger('parent_id')->nullable()->after('id');
+            $table->foreign('parent_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
@@ -22,7 +23,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('users', 'parent_id')) {
+                $table->dropColumn('parent_id');
+            }
         });
     }
 };

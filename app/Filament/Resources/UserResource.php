@@ -29,28 +29,33 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Datos del usuario')
-                    ->description('Información básica del usuario')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Nombre')
-                            ->required(),
-                        Forms\Components\TextInput::make('email')
-                            ->label('Correo electrónico')
-                            ->email()
-                            ->required(),
-                        Forms\Components\Select::make('roles')
-                            ->relationship('roles', 'name')
-                            ->multiple()
-                            ->preload()
-                            ->searchable(),
-                        Forms\Components\DateTimePicker::make('email_verified_at')
-                            ->label('Correo verificado en'),
-                        Forms\Components\TextInput::make('password')
-                            ->label('Contraseña')
-                            ->password()
-                            ->required(),
-                    ]),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->label('Roles'),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->maxLength(255)
+                    ->dehydrateStateUsing(fn ($state) => !empty($state) ? bcrypt($state) : null)
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->dehydrated(fn ($state) => filled($state)),
+                Forms\Components\Select::make('parent_id')
+                    ->label('Jefe directo')
+                    ->options(fn () => \App\Models\User::where('id', '!=', request()->route('record'))
+                        ->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->nullable()
+                    ->helperText('Selecciona el jefe directo de este usuario (opcional)'),
             ]);
     }
 
@@ -66,6 +71,11 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Roles')
+                    ->badge()
+                    ->color('info')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('manager.name')
+                    ->label('Jefe directo')
                     ->badge()
                     ->color('info')
                     ->searchable(),
