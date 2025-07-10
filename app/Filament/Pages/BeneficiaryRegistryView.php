@@ -195,9 +195,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         'Female' => 'Femenino',
                     ])->required(),
                     TextInput::make('phone')->label('Teléfono')->tel(),
-                    // Campo visible para el identificador (solo lectura)
-                    TextInput::make('identifier')->label('Identificador')->disabled()->dehydrated(),
-                    // Campo visual para el pad
+                    // Campo visible para el pad
                     ViewField::make('signature')
                         ->view('filament.components.signature-pad')
                         ->columnSpanFull(),
@@ -258,8 +256,6 @@ class BeneficiaryRegistryView extends Page implements HasTable
                                         'Female' => 'Femenino',
                                     ])->required()->columnSpan(1),
                                     TextInput::make('phone')->label('Teléfono')->tel()->columnSpan(2),
-                                    // Campo visible para el identificador (solo lectura)
-                                    TextInput::make('identifier')->label('Identificador')->disabled()->dehydrated()->columnSpan(2),
                                     Textarea::make('address_backup')->label('Dirección de respaldo')->rows(1)->columnSpan(3),
                                     Select::make('location_id')->label('Ubicación')
                                         ->options(Location::pluck('name', 'id')->toArray())
