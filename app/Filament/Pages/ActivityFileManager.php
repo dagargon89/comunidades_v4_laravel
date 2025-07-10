@@ -166,6 +166,29 @@ class ActivityFileManager extends Page implements Tables\Contracts\HasTable
                     ->openUrlInNewTab(),
                 DeleteAction::make(),
             ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('download_zip')
+                        ->label('Descargar seleccionados en ZIP')
+                        ->icon('heroicon-o-archive-box-arrow-down')
+                        ->action(function ($records) {
+                            $zipFileName = 'archivos_seleccionados_' . now()->timestamp . '.zip';
+                            $zipPath = storage_path('app/public/' . $zipFileName);
+                            $zip = new \ZipArchive;
+                            if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+                                foreach ($records as $file) {
+                                    $filePath = storage_path('app/public/' . $file->file_path);
+                                    if (file_exists($filePath)) {
+                                        $zip->addFile($filePath, $file->file_name);
+                                    }
+                                }
+                                $zip->close();
+                            }
+                            return response()->download($zipPath)->deleteFileAfterSend(true);
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                ]),
+            ])
             ->headerActions([
                 TableAction::make('add_files')
                     ->label('Agregar archivos')
