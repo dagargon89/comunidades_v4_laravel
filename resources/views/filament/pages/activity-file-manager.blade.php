@@ -24,4 +24,9 @@
             </x-filament::grid>
         </x-filament::section>
     @endif
+
+    <x-filament::section>
+        <h2 class="text-lg font-semibold mb-4">Archivos de la actividad</h2>
+        {{ $this->table }}
+    </x-filament::section>
 </x-filament-panels::page>

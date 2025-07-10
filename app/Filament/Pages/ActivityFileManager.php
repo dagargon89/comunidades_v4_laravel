@@ -195,9 +195,15 @@ class ActivityFileManager extends Page implements Tables\Contracts\HasTable
                         foreach ($data['files'] as $fileData) {
                             if (!empty($fileData['file_upload'])) {
                                 $uploaded = $fileData['file_upload'];
-                                $path = $uploaded->store('activity-files', 'public');
+                                if ($uploaded instanceof \Illuminate\Http\UploadedFile || $uploaded instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                                    $path = $uploaded->store('activity-files', 'public');
+                                    $fileName = $uploaded->getClientOriginalName();
+                                } else {
+                                    $path = $uploaded; // Ya es la ruta
+                                    $fileName = $fileData['file_name'] ?? basename($path);
+                                }
                                 ActivityFile::create([
-                                    'file_name' => $uploaded->getClientOriginalName(),
+                                    'file_name' => $fileName,
                                     'file_path' => $path,
                                     'activity_id' => $activityId,
                                     'activity_calendar_id' => $calendar->id,
