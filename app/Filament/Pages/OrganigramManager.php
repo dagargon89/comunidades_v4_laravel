@@ -9,10 +9,12 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use App\Models\User;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\SelectColumn;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class OrganigramManager extends Page implements HasTable
 {
     use InteractsWithTable;
+    use HasPageShield;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Gestión de Organigrama';
