@@ -129,7 +129,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
         }
         if ($this->activity_calendar_date) {
             $calendarId = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
-                ->where('start_date', $this->activity_calendar_date)
+            ->where('start_date', $this->activity_calendar_date)
                 ->value('id');
             if ($calendarId) {
                 $query->where('activity_calendar_id', $calendarId);
@@ -195,6 +195,53 @@ class BeneficiaryRegistryView extends Page implements HasTable
                 ->label('Registrar beneficiario único')
                 ->icon('heroicon-o-user-plus')
                 ->form([
+                    // Campo de búsqueda por identificador
+                    TextInput::make('search_identifier')
+                        ->label('Buscar por identificador')
+                        ->placeholder('Ej: PEREZ2025M')
+                        ->helperText('Ingresa el identificador para buscar un beneficiario existente')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function ($state, $set, $get) {
+                            if (!empty($state)) {
+                                $beneficiary = \App\Models\BeneficiaryRegistry::where('identifier', $state)->first();
+                                if ($beneficiary) {
+                                    $set('last_name', $beneficiary->last_name);
+                                    $set('mother_last_name', $beneficiary->mother_last_name);
+                                    $set('first_names', $beneficiary->first_names);
+                                    $set('birth_year', $beneficiary->birth_year);
+                                    $set('gender', $beneficiary->gender);
+                                    $set('phone', $beneficiary->phone);
+                                    $set('address_backup', $beneficiary->address_backup);
+                                    $set('location_id', $beneficiary->location_id);
+                                    $set('data_collector_id', $beneficiary->data_collector_id);
+
+                                    // Mostrar notificación de beneficiario encontrado
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Beneficiario encontrado')
+                                        ->body("Identificador: {$beneficiary->identifier}. Los datos han sido pre-llenados. Solo necesitas capturar la nueva firma.")
+                                        ->success()
+                                        ->send();
+                                } else {
+                                    // Limpiar campos si no se encuentra
+                                    $set('last_name', '');
+                                    $set('mother_last_name', '');
+                                    $set('first_names', '');
+                                    $set('birth_year', '');
+                                    $set('gender', '');
+                                    $set('phone', '');
+                                    $set('address_backup', '');
+                                    $set('location_id', '');
+                                    $set('data_collector_id', '');
+
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Beneficiario no encontrado')
+                                        ->body('No se encontró un beneficiario con ese identificador. Puedes proceder con el registro normal.')
+                                        ->warning()
+                                        ->send();
+                                }
+                            }
+                        }),
+
                     TextInput::make('last_name')->label('Apellido Paterno')->required(),
                     TextInput::make('mother_last_name')->label('Apellido Materno')->required(),
                     TextInput::make('first_names')->label('Nombres')->required(),
@@ -230,6 +277,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->where('start_date', $this->activity_calendar_date)
                         ->orderBy('id')
                         ->value('id');
+
                     $identifier = \App\Models\BeneficiaryRegistry::generarIdentificador(
                         $data['first_names'] ?? '',
                         $data['last_name'] ?? '',
@@ -237,6 +285,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         $data['birth_year'] ?? '',
                         $data['gender'] ?? ''
                     );
+
                     // Buscar o crear beneficiario
                     $beneficiary = \App\Models\BeneficiaryRegistry::firstOrCreate(
                         ['identifier' => $identifier],
@@ -244,6 +293,23 @@ class BeneficiaryRegistryView extends Page implements HasTable
                             'identifier' => $identifier,
                         ])
                     );
+
+                    // Verificar si ya existe una participación para esta actividad y calendario
+                    $existingParticipation = \App\Models\BeneficiaryActivityCalendar::where([
+                        'beneficiary_registry_id' => $beneficiary->id,
+                        'activity_id' => $this->activity_id,
+                        'activity_calendar_id' => $calendarId,
+                    ])->first();
+
+                    if ($existingParticipation) {
+                        \Filament\Notifications\Notification::make()
+                            ->title('Participación ya registrada')
+                            ->body('Este beneficiario ya está registrado para esta actividad en la fecha seleccionada.')
+                            ->warning()
+                            ->send();
+                        return;
+                    }
+
                     // Crear registro en la tabla pivote
                     \App\Models\BeneficiaryActivityCalendar::create([
                         'beneficiary_registry_id' => $beneficiary->id,
@@ -251,6 +317,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         'activity_calendar_id' => $calendarId,
                         'signature' => $data['signature'] ?? null,
                     ]);
+
                     \Filament\Notifications\Notification::make()
                         ->title('Beneficiario registrado correctamente')
                         ->success()
@@ -264,6 +331,54 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     Repeater::make('beneficiaries')
                         ->label('Beneficiarios')
                         ->schema([
+                            // Campo de búsqueda por identificador
+                            TextInput::make('search_identifier')
+                                ->label('Buscar por identificador')
+                                ->placeholder('Ej: PEREZ2025M')
+                                ->helperText('Ingresa el identificador para buscar un beneficiario existente')
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(function ($state, $set, $get) {
+                                    if (!empty($state)) {
+                                        $beneficiary = \App\Models\BeneficiaryRegistry::where('identifier', $state)->first();
+                                        if ($beneficiary) {
+                                            $set('last_name', $beneficiary->last_name);
+                                            $set('mother_last_name', $beneficiary->mother_last_name);
+                                            $set('first_names', $beneficiary->first_names);
+                                            $set('birth_year', $beneficiary->birth_year);
+                                            $set('gender', $beneficiary->gender);
+                                            $set('phone', $beneficiary->phone);
+                                            $set('address_backup', $beneficiary->address_backup);
+                                            $set('location_id', $beneficiary->location_id);
+                                            $set('data_collector_id', $beneficiary->data_collector_id);
+
+                                            // Mostrar notificación de beneficiario encontrado
+                                            \Filament\Notifications\Notification::make()
+                                                ->title('Beneficiario encontrado')
+                                                ->body("Identificador: {$beneficiary->identifier}. Los datos han sido pre-llenados. Solo necesitas capturar la nueva firma.")
+                                                ->success()
+                                                ->send();
+                                        } else {
+                                            // Limpiar campos si no se encuentra
+                                            $set('last_name', '');
+                                            $set('mother_last_name', '');
+                                            $set('first_names', '');
+                                            $set('birth_year', '');
+                                            $set('gender', '');
+                                            $set('phone', '');
+                                            $set('address_backup', '');
+                                            $set('location_id', '');
+                                            $set('data_collector_id', '');
+
+                                            \Filament\Notifications\Notification::make()
+                                                ->title('Beneficiario no encontrado')
+                                                ->body('No se encontró un beneficiario con ese identificador. Puedes proceder con el registro normal.')
+                                                ->warning()
+                                                ->send();
+                                        }
+                                    }
+                                })
+                                ->columnSpanFull(),
+
                             // Primera fila
                             Forms\Components\Grid::make(8)
                                 ->schema([
@@ -309,6 +424,10 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->where('start_date', $this->activity_calendar_date)
                         ->orderBy('id')
                         ->value('id');
+
+                    $registeredCount = 0;
+                    $skippedCount = 0;
+
                     foreach ($data['beneficiaries'] as $beneficiary) {
                         $identifier = \App\Models\BeneficiaryRegistry::generarIdentificador(
                             $beneficiary['first_names'] ?? '',
@@ -317,6 +436,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                             $beneficiary['birth_year'] ?? '',
                             $beneficiary['gender'] ?? ''
                         );
+
                         // Buscar o crear beneficiario
                         $beneficiaryModel = \App\Models\BeneficiaryRegistry::firstOrCreate(
                             ['identifier' => $identifier],
@@ -324,6 +444,19 @@ class BeneficiaryRegistryView extends Page implements HasTable
                                 'identifier' => $identifier,
                             ])
                         );
+
+                        // Verificar si ya existe una participación para esta actividad y calendario
+                        $existingParticipation = \App\Models\BeneficiaryActivityCalendar::where([
+                            'beneficiary_registry_id' => $beneficiaryModel->id,
+                            'activity_id' => $this->activity_id,
+                            'activity_calendar_id' => $calendarId,
+                        ])->first();
+
+                        if ($existingParticipation) {
+                            $skippedCount++;
+                            continue; // Saltar este beneficiario
+                        }
+
                         // Crear registro en la tabla pivote
                         \App\Models\BeneficiaryActivityCalendar::create([
                             'beneficiary_registry_id' => $beneficiaryModel->id,
@@ -331,9 +464,18 @@ class BeneficiaryRegistryView extends Page implements HasTable
                             'activity_calendar_id' => $calendarId,
                             'signature' => $beneficiary['signature'] ?? null,
                         ]);
+
+                        $registeredCount++;
                     }
+
+                    $message = "Se registraron {$registeredCount} beneficiarios correctamente.";
+                    if ($skippedCount > 0) {
+                        $message .= " Se omitieron {$skippedCount} beneficiarios que ya estaban registrados.";
+                    }
+
                     \Filament\Notifications\Notification::make()
-                        ->title('Beneficiarios registrados correctamente')
+                        ->title('Registro completado')
+                        ->body($message)
                         ->success()
                         ->send();
                 }),

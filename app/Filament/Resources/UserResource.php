@@ -29,21 +29,21 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                        Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
+                        Forms\Components\TextInput::make('email')
+                            ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name')
-                    ->multiple()
-                    ->preload()
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
                     ->searchable()
                     ->label('Roles'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
+                        Forms\Components\TextInput::make('password')
+                            ->password()
                     ->maxLength(255)
                     ->dehydrateStateUsing(fn ($state) => !empty($state) ? bcrypt($state) : null)
                     ->required(fn (string $context): bool => $context === 'create')
