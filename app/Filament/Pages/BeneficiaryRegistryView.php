@@ -22,6 +22,7 @@ use Filament\Forms\Components\View as ViewField;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Placeholder;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+use Filament\Tables\Columns\ImageColumn;
 
 class BeneficiaryRegistryView extends Page implements HasTable
 {
@@ -160,6 +161,11 @@ class BeneficiaryRegistryView extends Page implements HasTable
             Tables\Columns\TextColumn::make('beneficiaryRegistry.identifier')->label('Identificador'),
             Tables\Columns\TextColumn::make('activity.description')->label('Actividad')->limit(50),
             Tables\Columns\TextColumn::make('activityCalendar.start_date')->label('Fecha de la actividad')->date('d/m/Y'),
+            // Columna para mostrar la firma
+            ImageColumn::make('signature')
+                ->label('Firma')
+                ->height(60)
+                ->width(180),
             Tables\Columns\TextColumn::make('created_at')->label('Registrado el')->dateTime('d/m/Y H:i'),
         ];
     }
