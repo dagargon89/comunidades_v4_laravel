@@ -120,20 +120,22 @@ class BeneficiaryRegistryView extends Page implements HasTable
 
     protected function getTableQuery()
     {
-        if (
-            !$this->activity_id || $this->activity_id <= 0 ||
-            !$this->activity_calendar_date
-        ) {
-            return BeneficiaryRegistry::query()->whereRaw('1=0');
-        }
-        // Buscar los IDs de calendarios con esa fecha y actividad
-        $calendarIds = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
-            ->where('start_date', $this->activity_calendar_date)
-            ->pluck('id');
+        $query = \App\Models\BeneficiaryActivityCalendar::query()
+            ->with(['beneficiaryRegistry', 'activity', 'activityCalendar']);
 
-        return BeneficiaryRegistry::query()
-            ->where('activity_id', $this->activity_id)
-            ->whereIn('activity_calendar_id', $calendarIds);
+        if ($this->activity_id) {
+            $query->where('activity_id', $this->activity_id);
+        }
+        if ($this->activity_calendar_date) {
+            $calendarId = \App\Models\ActivityCalendar::where('activity_id', $this->activity_id)
+                ->where('start_date', $this->activity_calendar_date)
+                ->value('id');
+            if ($calendarId) {
+                $query->where('activity_calendar_id', $calendarId);
+            }
+        }
+
+        return $query;
     }
 
     protected function shouldRenderTable(): bool
@@ -144,18 +146,18 @@ class BeneficiaryRegistryView extends Page implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('last_name')->label('Apellido Paterno'),
-            Tables\Columns\TextColumn::make('mother_last_name')->label('Apellido Materno'),
-            Tables\Columns\TextColumn::make('first_names')->label('Nombres'),
-            Tables\Columns\TextColumn::make('birth_year')->label('Año Nacimiento'),
-            Tables\Columns\TextColumn::make('gender')->label('Género')
+            Tables\Columns\TextColumn::make('beneficiaryRegistry.last_name')->label('Apellido Paterno'),
+            Tables\Columns\TextColumn::make('beneficiaryRegistry.mother_last_name')->label('Apellido Materno'),
+            Tables\Columns\TextColumn::make('beneficiaryRegistry.first_names')->label('Nombres'),
+            Tables\Columns\TextColumn::make('beneficiaryRegistry.birth_year')->label('Año Nacimiento'),
+            Tables\Columns\TextColumn::make('beneficiaryRegistry.gender')->label('Género')
                 ->formatStateUsing(fn ($state) => match ($state) {
                     'Male' => 'Masculino',
                     'Female' => 'Femenino',
                     default => $state,
                 }),
-            Tables\Columns\TextColumn::make('phone')->label('Teléfono'),
-            Tables\Columns\TextColumn::make('identifier')->label('Identificador'),
+            Tables\Columns\TextColumn::make('beneficiaryRegistry.phone')->label('Teléfono'),
+            Tables\Columns\TextColumn::make('beneficiaryRegistry.identifier')->label('Identificador'),
             Tables\Columns\TextColumn::make('activity.description')->label('Actividad')->limit(50),
             Tables\Columns\TextColumn::make('activityCalendar.start_date')->label('Fecha de la actividad')->date('d/m/Y'),
             Tables\Columns\TextColumn::make('created_at')->label('Registrado el')->dateTime('d/m/Y H:i'),
@@ -229,12 +231,21 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         $data['birth_year'] ?? '',
                         $data['gender'] ?? ''
                     );
-                    BeneficiaryRegistry::create(array_merge($data, [
-                        'identifier' => $identifier,
+                    // Buscar o crear beneficiario
+                    $beneficiary = \App\Models\BeneficiaryRegistry::firstOrCreate(
+                        ['identifier' => $identifier],
+                        array_merge($data, [
+                            'identifier' => $identifier,
+                        ])
+                    );
+                    // Crear registro en la tabla pivote
+                    \App\Models\BeneficiaryActivityCalendar::create([
+                        'beneficiary_registry_id' => $beneficiary->id,
                         'activity_id' => $this->activity_id,
                         'activity_calendar_id' => $calendarId,
-                    ]));
-                    Notification::make()
+                        'signature' => $data['signature'] ?? null,
+                    ]);
+                    \Filament\Notifications\Notification::make()
                         ->title('Beneficiario registrado correctamente')
                         ->success()
                         ->send();
@@ -300,13 +311,22 @@ class BeneficiaryRegistryView extends Page implements HasTable
                             $beneficiary['birth_year'] ?? '',
                             $beneficiary['gender'] ?? ''
                         );
-                        BeneficiaryRegistry::create(array_merge($beneficiary, [
-                            'identifier' => $identifier,
+                        // Buscar o crear beneficiario
+                        $beneficiaryModel = \App\Models\BeneficiaryRegistry::firstOrCreate(
+                            ['identifier' => $identifier],
+                            array_merge($beneficiary, [
+                                'identifier' => $identifier,
+                            ])
+                        );
+                        // Crear registro en la tabla pivote
+                        \App\Models\BeneficiaryActivityCalendar::create([
+                            'beneficiary_registry_id' => $beneficiaryModel->id,
                             'activity_id' => $this->activity_id,
                             'activity_calendar_id' => $calendarId,
-                        ]));
+                            'signature' => $beneficiary['signature'] ?? null,
+                        ]);
                     }
-                    Notification::make()
+                    \Filament\Notifications\Notification::make()
                         ->title('Beneficiarios registrados correctamente')
                         ->success()
                         ->send();
