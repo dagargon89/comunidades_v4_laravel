@@ -247,36 +247,41 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     Repeater::make('beneficiaries')
                         ->label('Beneficiarios')
                         ->schema([
-                            Forms\Components\Grid::make([])
+                            // Primera fila
+                            Forms\Components\Grid::make(8)
                                 ->schema([
                                     TextInput::make('last_name')->label('Apellido Paterno')->required()->columnSpan(2),
                                     TextInput::make('mother_last_name')->label('Apellido Materno')->required()->columnSpan(2),
-                                    TextInput::make('first_names')->label('Nombres')->required()->columnSpan(3),
+                                    TextInput::make('first_names')->label('Nombres')->required()->columnSpan(4),
+                                ]),
+                            // Segunda fila
+                            Forms\Components\Grid::make(8)
+                                ->schema([
                                     TextInput::make('birth_year')->label('Año de Nacimiento')->numeric()->minValue(1900)->maxValue(date('Y'))->columnSpan(2),
                                     Select::make('gender')->label('Género')->options([
                                         'Male' => 'Masculino',
                                         'Female' => 'Femenino',
-                                    ])->required()->columnSpan(1),
+                                    ])->required()->columnSpan(2),
                                     TextInput::make('phone')->label('Teléfono')->tel()->columnSpan(2),
-                                    Textarea::make('address_backup')->label('Dirección de respaldo')->rows(1)->columnSpan(3),
+                                    Textarea::make('address_backup')->label('Dirección de respaldo')->rows(1)->columnSpan(2),
                                     Select::make('location_id')->label('Ubicación')
                                         ->options(Location::pluck('name', 'id')->toArray())
                                         ->required()
                                         ->native(false)
                                         ->searchable()
-                                        ->preload()->columnSpan(2),
+                                        ->preload()->columnSpan(3),
                                     Select::make('data_collector_id')->label('Recolector de datos')
                                         ->options(DataCollector::pluck('name', 'id')->toArray())
                                         ->required()
                                         ->native(false)
                                         ->searchable()
-                                        ->preload()->columnSpan(2),
-                                    // Campo de firma digital con el nuevo plugin
-                                    SignaturePad::make('signature')
-                                        ->label('Firma del beneficiario')
-                                        ->required()
-                                        ->columnSpanFull(),
-                                ])->columns(20),
+                                        ->preload()->columnSpan(3),
+                                ]),
+                            // Tercera fila: solo la firma
+                            SignaturePad::make('signature')
+                                ->label('Firma del beneficiario')
+                                ->required()
+                                ->columnSpanFull(),
                         ])
                         ->minItems(1)
                         ->addActionLabel('Agregar otro beneficiario')

@@ -76,9 +76,8 @@ class BeneficiaryRegistryResource extends Resource
                 Section::make('Firma')
                     ->description('Firma digital del beneficiario')
                     ->schema([
-                        Forms\Components\View::make('signature')
-                            ->view('filament.components.signature-pad')
-                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('signature')
+                        ->label('Firma'),
                     ]),
                 Section::make('Ubicación y capturista')
                     ->schema([
