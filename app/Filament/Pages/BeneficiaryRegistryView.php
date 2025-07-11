@@ -21,6 +21,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\View as ViewField;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Placeholder;
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 
 class BeneficiaryRegistryView extends Page implements HasTable
 {
@@ -195,9 +196,10 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         'Female' => 'Femenino',
                     ])->required(),
                     TextInput::make('phone')->label('Teléfono')->tel(),
-                    // Campo visible para el pad
-                    ViewField::make('signature')
-                        ->view('filament.components.signature-pad')
+                    // Campo de firma digital con el nuevo plugin
+                    SignaturePad::make('signature')
+                        ->label('Firma del beneficiario')
+                        ->required()
                         ->columnSpanFull(),
                     Forms\Components\Textarea::make('address_backup')
                         ->label('Dirección de respaldo')
@@ -269,11 +271,11 @@ class BeneficiaryRegistryView extends Page implements HasTable
                                         ->native(false)
                                         ->searchable()
                                         ->preload()->columnSpan(2),
-                                    Forms\Components\Placeholder::make('add_signature_placeholder')
-                                        ->label('')
-                                        ->content('Agregar firma')
-                                        ->columnSpan(1)
-                                        ->disableLabel(),
+                                    // Campo de firma digital con el nuevo plugin
+                                    SignaturePad::make('signature')
+                                        ->label('Firma del beneficiario')
+                                        ->required()
+                                        ->columnSpanFull(),
                                 ])->columns(20),
                         ])
                         ->minItems(1)
@@ -323,8 +325,10 @@ class BeneficiaryRegistryView extends Page implements HasTable
                     TextInput::make('phone')->label('Teléfono')->tel(),
                     // El identificador no se puede editar
                     TextInput::make('identifier')->label('Identificador')->disabled(),
-                    ViewField::make('signature')
-                        ->view('filament.components.signature-pad')
+                    // Campo de firma digital con el nuevo plugin
+                    SignaturePad::make('signature')
+                        ->label('Firma del beneficiario')
+                        ->required()
                         ->columnSpanFull(),
                     Forms\Components\Textarea::make('address_backup')
                         ->label('Dirección de respaldo')
