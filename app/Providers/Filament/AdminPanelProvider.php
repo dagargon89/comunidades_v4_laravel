@@ -66,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
                          'default' => 1,
                          'sm' => 2,
                      ]),
+                     \TomatoPHP\FilamentPWA\FilamentPWAPlugin::make()
              ])
             ->authMiddleware([
                 Authenticate::class,
