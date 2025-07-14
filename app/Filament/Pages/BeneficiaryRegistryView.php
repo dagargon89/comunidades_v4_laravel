@@ -496,9 +496,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         'Female' => 'Femenino',
                     ])->required(),
                     TextInput::make('phone')->label('Teléfono')->tel(),
-                    // El identificador no se puede editar
                     TextInput::make('identifier')->label('Identificador')->disabled(),
-                    // Campo de firma digital con el nuevo plugin
                     SignaturePad::make('signature')
                         ->label('Firma del beneficiario')
                         ->required()
@@ -518,7 +516,43 @@ class BeneficiaryRegistryView extends Page implements HasTable
                         ->native(false)
                         ->searchable()
                         ->preload(),
-                ]),
+                ])
+                ->mutateRecordDataUsing(function ($data, $record) {
+                    // Cargar los datos desde la relación beneficiaryRegistry
+                    if ($record && $record->beneficiaryRegistry) {
+                        $data['last_name'] = $record->beneficiaryRegistry->last_name;
+                        $data['mother_last_name'] = $record->beneficiaryRegistry->mother_last_name;
+                        $data['first_names'] = $record->beneficiaryRegistry->first_names;
+                        $data['birth_year'] = $record->beneficiaryRegistry->birth_year;
+                        $data['gender'] = $record->beneficiaryRegistry->gender;
+                        $data['phone'] = $record->beneficiaryRegistry->phone;
+                        $data['identifier'] = $record->beneficiaryRegistry->identifier;
+                        $data['signature'] = $record->signature; // La firma está en el pivote
+                        $data['address_backup'] = $record->beneficiaryRegistry->address_backup;
+                        $data['location_id'] = $record->beneficiaryRegistry->location_id;
+                        $data['data_collector_id'] = $record->beneficiaryRegistry->data_collector_id;
+                    }
+                    return $data;
+                })
+                ->action(function ($record, $data) {
+                    // Guardar los datos en beneficiaryRegistry
+                    if ($record && $record->beneficiaryRegistry) {
+                        $record->beneficiaryRegistry->update([
+                            'last_name' => $data['last_name'],
+                            'mother_last_name' => $data['mother_last_name'],
+                            'first_names' => $data['first_names'],
+                            'birth_year' => $data['birth_year'],
+                            'gender' => $data['gender'],
+                            'phone' => $data['phone'],
+                            'address_backup' => $data['address_backup'],
+                            'location_id' => $data['location_id'],
+                            'data_collector_id' => $data['data_collector_id'],
+                        ]);
+                    }
+                    // Guardar la firma en el pivote
+                    $record->signature = $data['signature'];
+                    $record->save();
+                }),
             Tables\Actions\DeleteAction::make(),
         ];
     }

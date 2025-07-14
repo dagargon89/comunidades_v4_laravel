@@ -20,9 +20,9 @@ class BeneficiaryRegistryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationLabel = 'Registros de beneficiarios';
-    protected static ?string $pluralLabel = 'Registros de beneficiarios';
-    protected static ?string $label = 'Registro de beneficiario';
+    protected static ?string $navigationLabel = 'Beneficiarios';
+    protected static ?string $pluralLabel = 'Beneficiarios';
+    protected static ?string $label = 'Beneficiario';
 
     protected static ?string $navigationGroup = 'Ejecución y Seguimiento';
     protected static ?int $navigationSort = 6;
@@ -47,30 +47,6 @@ class BeneficiaryRegistryResource extends Resource
                 Section::make('Información de actividad')
                     ->description('Datos de la actividad asociada')
                     ->schema([
-                        Forms\Components\Select::make('activity_id')
-                            ->label('Actividad')
-                            ->relationship('activity', 'description')
-                            ->required()
-                            ->native(false)
-                            ->searchable()
-                            ->preload()
-                            ->reactive(),
-                        Forms\Components\Select::make('activity_calendar_id')
-                            ->label('Fecha de la actividad')
-                            ->options(function (callable $get) {
-                                $activityId = $get('activity_id');
-                                if (!$activityId) return [];
-                                return \App\Models\ActivityCalendar::where('activity_id', $activityId)
-                                    ->orderBy('start_date')
-                                    ->get()
-                                    ->pluck('start_date', 'id')
-                                    ->toArray();
-                            })
-                            ->required()
-                            ->native(false)
-                            ->searchable()
-                            ->preload()
-                            ->reactive(),
                         Forms\Components\TextInput::make('identifier')->label('Identificador')->unique(ignoreRecord: true)->maxLength(255),
                     ])->columns(3),
                 Section::make('Firma')
@@ -123,14 +99,6 @@ class BeneficiaryRegistryResource extends Resource
                 Tables\Columns\TextColumn::make('identifier')
                     ->label('Identificador')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('activity.description')
-                    ->label('Actividad')
-                    ->limit(50)
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('activityCalendar.start_date')
-                    ->label('Calendario de actividad')
-                    ->date()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('location.name')
                     ->label('Ubicación')
                     ->sortable(),
