@@ -19,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+
             ])
              ->plugins([
                  FilamentShieldPlugin::make()
@@ -66,7 +68,6 @@ class AdminPanelProvider extends PanelProvider
                          'default' => 1,
                          'sm' => 2,
                      ]),
-                     \TomatoPHP\FilamentPWA\FilamentPWAPlugin::make()
              ])
             ->authMiddleware([
                 Authenticate::class,

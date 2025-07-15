@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\User\Pages;
 
 use Filament\Pages\Page;
 use Filament\Tables;
@@ -34,6 +34,7 @@ class BeneficiaryRegistryView extends Page implements HasTable
     protected static ?string $title = 'Registro de Beneficiarios';
     protected static ?string $navigationLabel = 'Registro de Beneficiarios';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?int $navigationSort = 1;
 
     public ?int $activity_id = null;
     public ?string $activity_calendar_date = null;
@@ -581,3 +582,4 @@ class BeneficiaryRegistryView extends Page implements HasTable
         ];
     }
 }
+
