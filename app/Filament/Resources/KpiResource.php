@@ -31,24 +31,34 @@ class KpiResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre'),
-                Forms\Components\Textarea::make('description')
-                    ->label('Descripción')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('initial_value')
-                    ->label('Valor inicial')
-                    ->numeric(),
-                Forms\Components\TextInput::make('final_value')
-                    ->label('Valor final')
-                    ->numeric(),
-                Forms\Components\Select::make('project_id')
-                    ->label('Proyecto')
-                    ->relationship('project', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Forms\Components\Section::make('Información del KPI')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre'),
+                        Forms\Components\Textarea::make('description')
+                            ->label('Descripción')
+                            ->columnSpanFull(),
+                    ]),
+                Forms\Components\Section::make('Valores')
+                    ->schema([
+                        Forms\Components\TextInput::make('initial_value')
+                            ->label('Valor inicial')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('final_value')
+                            ->label('Valor final')
+                            ->numeric(),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Proyecto relacionado')
+                    ->schema([
+                        Forms\Components\Select::make('project_id')
+                            ->label('Proyecto')
+                            ->relationship('project', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ]),
             ]);
     }
 
