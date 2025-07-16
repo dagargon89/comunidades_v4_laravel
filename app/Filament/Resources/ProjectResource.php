@@ -32,32 +32,32 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Información general')
-                    ->description('Datos principales del proyecto')
+                Forms\Components\Section::make('Información del proyecto')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->label('Nombre')
                             ->required(),
-                        Forms\Components\Textarea::make('background')
-                            ->label('Antecedentes')
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('justification')
-                            ->label('Justificación')
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('general_objective')
-                            ->label('Objetivo general')
-                            ->columnSpanFull(),
-                    ]),
-                Section::make('Relaciones')
-                    ->description('Vinculación con otros recursos')
-                    ->schema([
                         Forms\Components\Select::make('financier_id')
                             ->label('Financiador')
                             ->relationship('financier', 'name')
                             ->required()
-                            ->native(false)
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Nombre')
+                                    ->required(),
+                            ]),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Detalles')
+                    ->schema([
+                        Forms\Components\Textarea::make('background')
+                            ->label('Antecedentes'),
+                        Forms\Components\Textarea::make('justification')
+                            ->label('Justificación'),
+                        Forms\Components\Textarea::make('general_objective')
+                            ->label('Objetivo general'),
                     ]),
             ]);
     }
