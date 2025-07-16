@@ -31,9 +31,12 @@ class ResponsibleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
+                Forms\Components\Section::make('Información del responsable')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required(),
+                    ]),
             ]);
     }
 

@@ -31,16 +31,20 @@ class ProgramResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\Select::make('axe_id')
-                    ->label('Eje')
-                    ->relationship('axe', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Forms\Components\Section::make('Información del programa')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required(),
+                        Forms\Components\Select::make('axe_id')
+                            ->label('Eje')
+                            ->relationship('axe', 'name')
+                            ->required()
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columns(2),
             ]);
     }
 

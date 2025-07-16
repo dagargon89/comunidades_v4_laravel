@@ -30,8 +30,11 @@ class OrganizationResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre'),
+                Forms\Components\Section::make('Información de la organización')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre'),
+                    ]),
             ]);
     }
 

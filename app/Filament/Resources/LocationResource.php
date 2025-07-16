@@ -31,31 +31,37 @@ class LocationResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\TextInput::make('category')
-                    ->label('Categoría'),
-                Forms\Components\Textarea::make('street')
-                    ->label('Calle')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('neighborhood')
-                    ->label('Colonia'),
-                Forms\Components\TextInput::make('ext_number')
-                    ->label('Número exterior')
-                    ->numeric(),
-                Forms\Components\TextInput::make('int_number')
-                    ->label('Número interior')
-                    ->numeric(),
-                Forms\Components\TextInput::make('google_place_id')
-                    ->label('ID de Google Place'),
-                Forms\Components\Select::make('polygon_id')
-                    ->label('Polígono')
-                    ->relationship('polygon', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Forms\Components\Section::make('Información de la ubicación')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre'),
+                        Forms\Components\TextInput::make('category')
+                            ->label('Categoría'),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Dirección')
+                    ->schema([
+                        Forms\Components\TextInput::make('street')
+                            ->label('Calle'),
+                        Forms\Components\TextInput::make('neighborhood')
+                            ->label('Colonia'),
+                        Forms\Components\TextInput::make('ext_number')
+                            ->label('Número exterior'),
+                        Forms\Components\TextInput::make('int_number')
+                            ->label('Número interior'),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Otros datos')
+                    ->schema([
+                        Forms\Components\TextInput::make('google_place_id')
+                            ->label('Google Place ID'),
+                        Forms\Components\Select::make('polygon_id')
+                            ->label('Polígono')
+                            ->relationship('polygon', 'name')
+                            ->native(false)
+                            ->searchable()
+                            ->preload(),
+                    ])
             ]);
     }
 

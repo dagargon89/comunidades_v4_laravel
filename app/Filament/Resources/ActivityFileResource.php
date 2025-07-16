@@ -32,20 +32,31 @@ class ActivityFileResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('file_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('file_path')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('activity_id')
-                    ->relationship('activity', 'description')
-                    ->required(),
-                Forms\Components\Select::make('activity_calendar_id')
-                    ->label('Fecha de la actividad')
-                    ->options(ActivityCalendar::all()->pluck('start_date', 'id'))
-                    ->searchable()
-                    ->required(),
+                Forms\Components\Section::make('Archivo')
+                    ->schema([
+                        Forms\Components\TextInput::make('file_name')
+                            ->label('Nombre del archivo')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('file_path')
+                            ->label('Ruta del archivo')
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Actividad relacionada')
+                    ->schema([
+                        Forms\Components\Select::make('activity_id')
+                            ->relationship('activity', 'description')
+                            ->label('Actividad')
+                            ->required(),
+                        Forms\Components\Select::make('activity_calendar_id')
+                            ->label('Fecha de la actividad')
+                            ->options(\App\Models\ActivityCalendar::all()->pluck('start_date', 'id'))
+                            ->searchable()
+                            ->required(),
+                    ])
+                    ->columns(2),
             ]);
     }
 

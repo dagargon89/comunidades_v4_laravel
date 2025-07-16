@@ -31,8 +31,11 @@ class FinancierResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre'),
+                Forms\Components\Section::make('Información del financiador')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre'),
+                    ]),
             ]);
     }
 

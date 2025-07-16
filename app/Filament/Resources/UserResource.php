@@ -29,33 +29,47 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make('Datos de usuario')
+                    ->schema([
                         Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                            ->label('Nombre')
+                            ->required()
+                            ->maxLength(255),
                         Forms\Components\TextInput::make('email')
+                            ->label('Correo electrónico')
                             ->email()
-                    ->required()
-                    ->maxLength(255),
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Acceso y roles')
+                    ->schema([
                         Forms\Components\Select::make('roles')
                             ->relationship('roles', 'name')
                             ->multiple()
                             ->preload()
-                    ->searchable()
-                    ->label('Roles'),
+                            ->searchable()
+                            ->label('Roles'),
                         Forms\Components\TextInput::make('password')
+                            ->label('Contraseña')
                             ->password()
-                    ->maxLength(255)
-                    ->dehydrateStateUsing(fn ($state) => !empty($state) ? bcrypt($state) : null)
-                    ->required(fn (string $context): bool => $context === 'create')
-                    ->dehydrated(fn ($state) => filled($state)),
-                Forms\Components\Select::make('parent_id')
-                    ->label('Jefe directo')
-                    ->options(fn () => \App\Models\User::where('id', '!=', request()->route('record'))
-                        ->pluck('name', 'id'))
-                    ->searchable()
-                    ->preload()
-                    ->nullable()
-                    ->helperText('Selecciona el jefe directo de este usuario (opcional)'),
+                            ->maxLength(255)
+                            ->dehydrateStateUsing(fn ($state) => !empty($state) ? bcrypt($state) : null)
+                            ->required(fn (string $context): bool => $context === 'create')
+                            ->dehydrated(fn ($state) => filled($state)),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Jerarquía')
+                    ->schema([
+                        Forms\Components\Select::make('parent_id')
+                            ->label('Jefe directo')
+                            ->options(fn () => \App\Models\User::where('id', '!=', request()->route('record'))
+                                ->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->nullable()
+                            ->helperText('Selecciona el jefe directo de este usuario (opcional)'),
+                    ]),
             ]);
     }
 

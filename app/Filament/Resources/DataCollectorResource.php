@@ -30,15 +30,22 @@ class DataCollectorResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\TextInput::make('phone')
-                    ->label('Teléfono')
-                    ->tel(),
-                Forms\Components\Toggle::make('active')
-                    ->label('Activo')
-                    ->required(),
+                Forms\Components\Section::make('Información del capturista')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required(),
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Teléfono')
+                            ->tel(),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Estado')
+                    ->schema([
+                        Forms\Components\Toggle::make('active')
+                            ->label('Activo')
+                            ->required(),
+                    ]),
             ]);
     }
 
