@@ -31,12 +31,14 @@ class PolygonResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\Textarea::make('description')
-                    ->label('Descripción')
-                    ->columnSpanFull(),
+                Forms\Components\Section::make('Información del polígono')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre'),
+                        Forms\Components\Textarea::make('description')
+                            ->label('Descripción'),
+                    ])
+                    ->columns(2),
             ]);
     }
 
