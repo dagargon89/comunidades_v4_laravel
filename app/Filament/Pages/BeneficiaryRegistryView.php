@@ -180,7 +180,9 @@ class BeneficiaryRegistryView extends Page implements HasTable
                 ])
                 ->query(function ($query, $data) {
                     if (!empty($data['identifier'])) {
-                        $query->where('identifier', 'like', '%' . $data['identifier'] . '%');
+                        $query->whereHas('beneficiaryRegistry', function ($q) use ($data) {
+                            $q->where('identifier', 'like', '%' . $data['identifier'] . '%');
+                        });
                     }
                 }),
         ];
