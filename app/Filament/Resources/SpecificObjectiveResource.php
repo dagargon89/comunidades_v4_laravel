@@ -31,16 +31,18 @@ class SpecificObjectiveResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Textarea::make('description')
-                    ->label('Descripción')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('project_id')
-                    ->label('Proyecto')
-                    ->relationship('project', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Forms\Components\Section::make('Información del objetivo específico')
+                    ->schema([
+                        Forms\Components\Textarea::make('description')
+                            ->label('Descripción')
+                            ->required(),
+                        Forms\Components\Select::make('project_id')
+                            ->label('Proyecto')
+                            ->relationship('project', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                    ]),
             ]);
     }
 

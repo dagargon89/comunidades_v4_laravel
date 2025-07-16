@@ -30,44 +30,52 @@ class ActivityCalendarResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\DatePicker::make('start_date')
-                    ->label('Fecha de inicio'),
-                Forms\Components\DatePicker::make('end_date')
-                    ->label('Fecha de fin'),
-                Forms\Components\TimePicker::make('start_hour')
-                    ->label('Hora de inicio'),
-                Forms\Components\TimePicker::make('end_hour')
-                    ->label('Hora de fin'),
-                Forms\Components\Textarea::make('address_backup')
-                    ->label('Respaldo de dirección')
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('cancelled')
-                    ->label('Cancelado')
-                    ->required(),
-                Forms\Components\Textarea::make('change_reason')
-                    ->label('Motivo de cambio')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('activity_id')
-                    ->label('Actividad')
-                    ->relationship('activity', 'description')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('location_id')
-                    ->label('Ubicación')
-                    ->relationship('location', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('data_collector_id')
-                    ->label('Capturista')
-                    ->relationship('dataCollector', 'name')
-                    ->required()
-                    ->native(false)
-                    ->searchable()
-                    ->preload(),
+                Forms\Components\Section::make('Fechas y horarios')
+                    ->schema([
+                        Forms\Components\DatePicker::make('start_date')
+                            ->label('Fecha de inicio')
+                            ->required(),
+                        Forms\Components\DatePicker::make('end_date')
+                            ->label('Fecha de fin')
+                            ->required(),
+                        Forms\Components\TimePicker::make('start_hour')
+                            ->label('Hora de inicio'),
+                        Forms\Components\TimePicker::make('end_hour')
+                            ->label('Hora de fin'),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Ubicación y responsables')
+                    ->schema([
+                        Forms\Components\Select::make('activity_id')
+                            ->label('Actividad')
+                            ->relationship('activity', 'description')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('location_id')
+                            ->label('Ubicación')
+                            ->relationship('location', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('data_collector_id')
+                            ->label('Capturista')
+                            ->relationship('dataCollector', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Detalles adicionales')
+                    ->schema([
+                        Forms\Components\Textarea::make('address_backup')
+                            ->label('Dirección alternativa'),
+                        Forms\Components\Toggle::make('cancelled')
+                            ->label('Cancelado')
+                            ->required(),
+                        Forms\Components\Textarea::make('change_reason')
+                            ->label('Motivo de cambio'),
+                    ]),
             ]);
     }
 
