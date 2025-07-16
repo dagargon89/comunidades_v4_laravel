@@ -13,6 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
 
 class ActivityResource extends Resource
 {
@@ -35,28 +38,29 @@ class ActivityResource extends Resource
                 Section::make('Descripción de la actividad')
                     ->description('Información principal de la actividad')
                     ->schema([
-                        Forms\Components\Textarea::make('description')
+                        Textarea::make('description')
                             ->label('Descripción')
+                            ->required()
                             ->columnSpanFull(),
                     ]),
-                Section::make('Relaciones')
+                Section::make('Vinculación con otros recursos')
                     ->description('Vinculación con otros recursos')
                     ->schema([
-                        Forms\Components\Select::make('specific_objective_id')
+                        Select::make('specific_objective_id')
                             ->label('Objetivo específico')
                             ->relationship('specificObjective', 'description')
                             ->required()
                             ->native(false)
                             ->searchable()
                             ->preload(),
-                        Forms\Components\Select::make('responsible_id')
+                        Select::make('responsible_id')
                             ->label('Responsable')
                             ->relationship('responsible', 'name')
                             ->required()
                             ->native(false)
                             ->searchable()
                             ->preload(),
-                        Forms\Components\Select::make('goal_id')
+                        Select::make('goal_id')
                             ->label('Meta')
                             ->relationship('goal', 'description')
                             ->required()
